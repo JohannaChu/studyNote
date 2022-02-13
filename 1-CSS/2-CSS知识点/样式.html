@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 此种方式为内部样式表 */
+        /* CSS规则由两个部分组成：选择器和一条或者多条声明，其中声明里面包含属性和属性值 */
+        /* 基础选择器中的标签选择器：也称为元素选择器，是将html里面的标签名作为选择器 */
+        p {
+            color: red;
+            /* 修改文字像素为12像素 */
+            font: size 12px;
+            text-align: center;
+            text-decoration: underline;
+            /* text-decoration常用于对链接删除下划线或者添加下划线 */
+            /* 文本缩进：text-indent常用于对首行进行缩进,如果写了em，则代表缩进当前元素2个文字大小的值，是一个相对单位 */
+            text-indent: 2em;
+
+        }
+
+        /* 类选择器：可以单独选一个或者几个标签，结构需要用到class属性来调用class类 */
+        .red {
+            color: rgb(212, 158, 158);
+        }
+
+        /* 类选择器-多类名：可以给一个标签指定多个类名 */
+        .color {
+            color: rgb(102, 50, 50)
+                /* 三种表示颜色的方法：预定义的颜色值，十六进制和RGB代码，常用十六进制 */
+        }
+
+        .font {
+            font: 100;
+            font-weight: 700;
+            /* 加粗效果，相比bold实际开发更经常用数字，正常值是400，注意数字后面不加单位 */
+        }
+
+        /* id选择器,和类选择器的区别是id选择器只能调用一次 */
+        #test {
+            color: saddlebrown;
+        }
+
+        /* *是通配符选择器，会选取所有的标签 */
+
+        /* 一般页面会对整个body的标签进行修改，例如文字大小 */
+        body {
+            font-family: 'Microsoft Yahei';
+            /* 多个单词组成的最好加个引号，单引号和双引号都是可以的 */
+            font-size: 24px;
+        }
+
+        em {
+            font-style: normal;
+        }
+
+        .mix {
+            font: italic 700 16px 'Microsoft yahei'
+                /* 用符合属性的时候开头必须使用font: 不需要的属性可以省略保留默认值但是font-size和font-family必须保留，否则会报错 */
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        ul {
+            line-height: 50px;
+            /* 行高设置：每一行之间的距离 */
+        }
+    </style>
+</head>
+
+<body>
+    <p>这里是对CSS样式的一个测试</p>
+    <ul>
+        <li class="red">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+
+    <em>font-style主要是将倾斜的文字变得不倾斜,反而很少把文字变得倾斜</em>
+    <div class="color font">测试多类名</div>
+    <div id="test">测试id类名</div>
+    <div class="mix">复合属性，但是有对应的顺序（font-style font-weight font-size/line-height font-family),顺序不能有差别</div>
+    <a href="http://baidu.com">去除链接下划线</a>
+</body>
+
+</html>

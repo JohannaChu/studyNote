@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面布局三大核心：盒子模型、浮动、定位</title>
+    <style>
+        div {
+            width: 200px;
+            height: 200px;
+            border: 1px solid blue;
+            border-top: 1px solid red;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!--盒子模型四大组成部分：边框：border;内容：content;内边距：padding;外边距：margin
+        1、border:border-weight(定义边框粗细，单位是px)  border-style（样式，例solid是实线边框） border-color
+        (例如border:1px solid red;)
+        但是边框是可以分开来写的，例如：
+        border-top:1 px solid red;
+
+        2、border-collapse:把相邻边框连在一起
+ 
+        3、边框会影响盒子的实际大小
+
+        4、内边距padding:主要用于设置内边距，即边框与内容之间的距离
+            padding-left/right:20px;  padding-top/bottom
+           * 内边距的复合写法：
+           （1）padding:5px  1个值，代表上下左右都是5像素内边距
+            (2) padding:5px 10px;  2个值，代表上下内边距是5像素 左右内边距是10像素
+            (3) padding:5px 10px 20px; 3个值，代表上内边距5像素  左右内边距10像素  下边距20像素
+            (4) padding：5px 10px 20px 30px; 4个值，顺时针方向：上是5像素 右是10像素 下是20像素 左是30像素
+        
+        5、如果没有指定width/height属性，则padding值不会撑开盒子
+
+        6、外边距：设置外边距，则盒子与盒子之间的距离
+            margin-top/bottom/left/right 并且其简写方式和padding一致
+        ps:外边距可以让块级盒子水平居中，但是必须满足两个条件：
+                (1) 盒子的宽度必须指定
+               （2）盒子的左右外边距设置为auto margin: 0,auto;
+        但是这种方法无法对行内元素和行内块元素起效果，如果想要对其水平居中对其，则给其父元素设置text-align：center;即可 垂直居中是line-height等于盒子高度
+
+        7、嵌套块元素会有垂直外边距塌陷的问题，即父级元素和子集元素粘合在一起margin-top一起下来
+            解决方法：（1）可以为父元素定义上边框 border: 1px solid transparent;
+                      （2）可以为父元素定义上内边距 padding: 1px;
+                       (3) 可以为父级元素添加overflow:hidden
+
+        8、清除内外边距：行内元素尽量只设置左右边距，块元素和行内块元素没有限制
+        *{
+            margin: 0 0;
+            padding: 0 0;
+        }
+    -->
+
+    <div></div>
+
+
+
+</body>
+
+</html>

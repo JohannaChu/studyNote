@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .body {
+            /* 透视写在被观察元素的父盒子,但不一定是上一级父盒子，其他父盒子也可以 */
+            perspective: 400px;
+        }
+
+        .box {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 100px auto;
+            /* 谁做过渡给谁加 */
+            transition: all 0.3s;
+            /* 让背面的紫色盒子保留立体空间，需要给子盒子保留 */
+            transform-style: preserve-3d;
+        }
+
+        .box:hover {
+            transform: rotateY(180deg);
+        }
+
+        .front,
+        .end {
+            /* 因为两个盒子是骡在一起的，所以要不占有空间 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .front {
+            background-color: pink;
+            /* 如果不加的话下面的紫色盒子会把上面的粉色盒子压住 */
+            z-index: 1;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            line-height: 300px;
+        }
+
+        .end {
+            background-color: purple;
+            color: white;
+            text-align: center;
+            line-height: 300px;
+            /* 让两个盒子背靠着，转过来的话就可以直接看到另一个盒子的正面 */
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="front">黑马教程</div>
+        <div class="end">在这里等你</div>
+    </div>
+</body>
+
+</html>

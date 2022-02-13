@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- CSS新增新特性:
+    1.属性选择器:用中括号[]来选择
+        例如E[att]表示选择具有att属性的E元素(利用属性选择器就可以不用借助类或者id选择器) 例如div[class^=icon]表示选择首先是div,然后具有class属性,必须是icon开头的这些元素
+        *E[att="val"]表示选择具有att属性且属性值等于val开头的E元素(可以选择属性=值的某个元素) <input[type="password"]>
+
+    2、结构伪类选择器：主要根据文档结构来选择器元素，常用于父级选择器里面的子元素
+        E:first-child表示匹配父元素中的第一个子元素E，例如ul li:first-child{}
+        E:last-child表示匹配父元素中最后一个E元素
+        E:nth-child(n)表示匹配父元素中的第n个子元素E（选择某个父元素的一个或者多个特定的子元素），例如ul li:nth-child(2){}表示选择了第二个元素
+            其中n可以是数字，也可以是关键字和公式
+                如果n是数字，就是选择第n个元素，里面的数字从数字1开始
+                如果n是关键字，可以是奇数odd或者偶数even
+                如果n是公式：常见的公式如下
+                    （如果n是公式，则从0开始计算，但是第0个元素或者超出元素的个数会被忽略，相当于选择全部的元素），例如nth-child(n)，其中的n不能改成s或者其他任意字母
+                    也有2n(偶数)、2n+1(奇数)、5n、n+5、-n+5等任意公式
+        E：first-of-type表示指定类型E的第一个
+        E：last-of-type表示指定类型E的最后一个
+        E：nth-of-type表示指定类型E的第n个
+        和上面的区别在于：
+        nth-child对父元素里面的所有孩子都排序选择（序号是固定的） 先找到第n个孩子，然后看看是否匹配
+        nth-of-type对父元素里面指定子元素进行排序选择，先去匹配E，再根据E找到第n个孩子
+        ps:如果是无序列表，用nth-child比较多；类选择器、属性选择器、伪类选择器的权重都是10
+
+    3、**伪元素选择器（重点）：帮助CSS创建新标签元素，而不需要HTML标签
+        要注意有content属性 
+        ::before(在元素内部的前面插入内容)    ::after（在元素内部的后面插入内容）  语法：element::before{} 必须要有content属性
+        注意：before和after创建一个元素，但是属于行内元素（不能设置大小）
+        伪类选择器和标签选择器一样权重是1
+        使用场景：（1）添加伪元素字体图标
+                （2）清除浮动
+            
+        
+    4、CSS3盒子模型：可以通过box-sizing来指定盒模型，有两个值：content-box和border-box
+        box-sizing:content-box;盒子的大小为width+padding+border（会有调整padding或者border把原有盒子撑开的现象）
+        box-sizing:border-box盒子大小为width（padding和border就不会撑大盒子了）
+
+    5、其他特性（了解即可）
+        滤镜filter:用法filter:函数()  例如filter：blur(5px) blur模糊处理 数值越大越模糊
+        calc()函数：可以让你在声明的CSS属性值的时候执行一些计算
+            width:calc(100%-80px);里面的括号可以使用+—*/来进行计算（计算符号例如+后面要加空格）
+
+    6、**CSS过渡：transition:要过渡的属性 花费时间 运动曲线 何时开始；
+        属性：想要变化的CSS属性，宽度高度，背景颜色，内外边距都可以，若想所有的属性都变化过渡，则写一个all
+        花费时间：单位是秒（必须写）
+        运动曲线：默认是ease（可以省略）
+        何时开始：单位是秒（必须写）可以设置延迟出发时间 默认是0s 可以省略
+        ps:谁做过渡给谁加
+
+
+        
+  -->
+
+</body>
+
+</html>

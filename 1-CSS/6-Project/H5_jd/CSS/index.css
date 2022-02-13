@@ -1,0 +1,236 @@
+/* 这里是流式布局的例子，流式布局主要不用固定的宽度而用百分比 */
+img,a {-webkit-touch-callout:none;}
+
+input {-webkit-appearance:none;}
+
+
+/* 清除浮动 */
+.clearfix:after {
+    visibility: hidden;
+    clear: both;
+    display: block;
+    content: ".";
+    height: 0
+}
+
+.clearfix {
+    *zoom: 1
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    /* 这里的盒子模型修改padding和margin后不会撑大原有的盒子大小 */
+    box-sizing: border-box;
+}
+
+
+body {
+    width: 100%;
+    /* 设置最小宽度为320px，小于则不能进行缩放 */
+    min-width: 320px;
+    /* 具体的大小要看公司的要求布局 */
+    max-width: 640px;
+    margin: 0 auto;
+    background-color: #fff;
+    font-size: 14px;
+    font-family: -apple-system, Arial, Helvetica, sans-serif;
+    /* 这里的意思为会设置文字的大小*1.5的行高 */
+    list-style: 1.5;
+    color: #666;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.img {
+    /* 去除图片底端的空白缝隙 */
+    vertical-align: top;
+}
+
+a {
+    color: #666;
+    text-decoration: none;
+}
+
+.app {
+    height: 45px;
+}
+
+.app ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app ul li {
+    float: left;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    color: #FFFFF2;
+    background-color: #333;
+}
+
+.app ul li:nth-child(1) {
+    width: 8%;
+}
+
+.app ul li:nth-child(1) img {
+    /* 图片是行内块元素 */
+    width: 10px;
+}
+
+.app ul li:nth-child(2) {
+    width: 10%;
+}
+
+.app ul li:nth-child(2) img {
+    width: 30px;
+    /* 默认图片和文字的基线对齐，不调整的话logo会偏上;第一个没有偏上的原因是本身只有10px看不太出来 */
+    vertical-align: middle;
+}
+
+.app ul li:nth-child(3) {
+    width: 57%;
+}
+
+.app ul li:nth-child(4) {
+    width: 25%;
+    background-color: #F63515;
+}
+
+.search-wrap {
+    position: fixed;
+    /* 父子外边距合并（嵌套块级元素垂直外边距塌陷），增加一个溢出隐藏即可 */
+    overflow: hidden;
+    height: 44px;
+    width: 100%;
+    /* fixed固定定位要有宽度，加上大小 */
+    min-width: 320px;
+    max-width: 640px;
+    color: #FFFFF2;
+    line-height: 44px;
+}
+
+.search-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 44px;
+}
+
+.search-btn::before {
+    /* 必须要有这个值 */
+    content: "";
+    /* 伪元素选择器属于行内元素，必须要转化才有大小 */
+    display: block;
+    width: 20px;
+    height: 18px;
+    margin: 14px 0 0 15px;
+    background: url(../images/s-btn.png) no-repeat;
+    background-size: 20px 18px;
+}
+.search-login {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 44px;
+    text-align: center;
+}
+
+.search {
+    position: relative;
+    /* 这里不能给宽度 */
+    height: 30px;
+    /* 给了margin值后在页面进行缩放的时候，搜索框也会跟着缩放而两边的按钮则不会 */
+    margin: 0 50px;
+    margin-top: 7px;
+    border-radius: 15px;
+    background-color: #fff;
+}
+
+.jd-icon {
+    width: 20px;
+    height: 15px;
+    position: absolute;
+    top: 8px;
+    left: 13px;
+    background: url(../images/jd.png) no-repeat;
+    background-size: 20px 15px;
+}
+
+.jd-icon::after {
+    content: "";
+    display: block;
+    /* 不用定位的话默认在盒子内部（因为没有文字），效果会在图片前面 */
+    position: absolute;
+    right: -8px;
+    top: 0;
+    width: 1px;
+    height: 15px;
+    background-color: #ccc;
+}
+
+.sou {
+    position: absolute;
+    left: 50px;
+    top: 8px;
+    width: 18px;
+    height: 15px;
+    background: url(../images/jd-sprites.png) no-repeat -81px 0;
+    /* 这里的background-size也要写精灵图原来宽度的一半，原本大小是400px */
+    background-size: 200px auto;
+}
+
+.slider img {
+    width: 100%;
+}
+
+.brand div {
+    width: 33.33%;
+    float: left;
+}
+
+.brand div img {
+    width: 100%;
+}
+
+nav a {
+    float: left;
+    width: 20%;
+    text-align: center;
+}
+
+nav a img {
+    margin: 10px 0;
+    width: 40px;
+}
+
+nav a span {
+    display: block;
+    font-size: 14px;
+}
+
+.news {
+    /* 这里要对nav清除浮动才有效果，因为上面的盒子没有设置高度 */
+    margin-top: 20px;
+}
+
+.news a {
+    float: left;
+}
+
+.news img {
+    width: 100%;
+}
+
+.news a:first-child {
+    width: 50%;
+}
+
+.news a:nth-child(n+2) {
+    width: 25%;
+    border-left: 1px solid #ccc;
+}
+

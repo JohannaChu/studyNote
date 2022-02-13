@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表格（表单域）</title>
+</head>
+
+<body>
+    <!-- 一个表单有三个部分组成：表单域，表单控件（也称为表单元素），提示信息 -->
+    <!-- 表单域是收集一个包含表单元素的区域，里面的form会把他范围里面的表单元素传输给服务器 -->
+    <form>
+        <!-- form里面有三种属性 -->
+        <!-- label标签为input元素定义标注，label的for属性应该与相关元素的id属性相同,效果为点击label标签里面的文字，光标自动转到input元素里面 -->
+        <label for="text">用户名：</label><input type="text" id="text"> <br>
+
+        <label for="password">密码：</label> <input type="password" id="password"> <br>
+        婚姻状态：<input type="radio" name="sex" id="nomarry"><label for="nomarry">未婚</label> <input type="radio" name="sex"
+            id="married"><label for="married">已婚</label> <br>
+        <!-- radio是单选按钮，可以实现多选 -->
+        <!-- input是标签，type是属性，radio是属性值 -->
+
+        <!-- select标签用法：下拉 -->
+        性别：
+        <select>
+            <option>男</option>
+            <option selected="selected">女</option>
+            <!-- 设置selected属性让其在出现的时候默认选定这个属性，类似checked -->
+        </select>
+    </form>
+</body>
+
+</html>

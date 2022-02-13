@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!--
+        盒子模型还增加了CS3的一些特性：圆角边框、盒子阴影、
+            1、圆角边框：border-radius:length; 例如boarder-radius: 10px; 单位可以是px也可以是百分比（百分比就是宽度和高度的一半）
+                    *把正方形变成圆形：border-radius: 50%
+                    *把正方性变成圆角矩形：高度的一半
+            该属性其实是一个简写，分别代表顺时针方向（左上角 右上角 ...）
+
+            2、盒子阴影：box-shadow
+                box-shadow: h-shadow v-shadow blur spread color inset; 前两项必须 后面可选
+                    h-shadow:水平距离(x轴); v-shadow:垂直距离(y轴) blur:模糊距离 spread:阴影的尺寸 inset:内阴影（不可以写outset）
+                如果想鼠标经过时才有阴影，应该把盒子阴影参数放在 div:hover里面
+                例如： div:hover {box-shadow: 10px 10px 10px -4px rgba(0,0,0, .3)}
+
+            3、文字阴影（不是很重要,在实际开发用的不多）
+                text-shadow: h-shadow v-shadow blur color;
+
+    -->
+</body>
+
+</html>

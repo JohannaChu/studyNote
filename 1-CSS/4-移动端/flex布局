@@ -1,0 +1,69 @@
+1、主要优点
+    操作方便，布局极为简单，移动端应用很广泛
+
+2、flex布局原理：任何一个盒模型都可以指定为flex布局
+    当为父盒子设置flex布局以后，子元素的float、clear和vertical-align属性将会失效
+    flex布局有称为伸缩布局=弹性布局=伸缩盒布局=弹性盒布局=flex布局
+    采用flex布局的元素称为flex容器，简称为容器;他们的所有子元素自动称为容器成员，称为flex项目，简称项目
+    **总结：通过给父盒子添加flex属性，来控制子盒子的位置和排列方式（注意对象是父盒子）
+        display:flex; (有时候会和position:fixed; 混合)
+
+3、flex布局父项常见属性
+    3.1 flex-direction：设置主轴方向
+        主轴和侧轴是会变化的，就看flex-direction设置谁为主轴，剩下的就是侧轴，而子元素是跟着主轴来排列的
+        属性值： *row：默认值从左到右
+                 row-reverse：从右到左
+                 *column：从上到小
+                 column-reverse：从下到上
+
+    3.2 justify-content：设置主轴上的子元素排列方式（不改变子盒子的位置，只改变排列的顺序）
+        这个属性定义了项目在主轴上的对齐方式（ps:一定要确定好主轴是哪个）
+        属性值：*flex-start:默认值从头部开始，如果主轴是x轴，则从左到右
+                flex-end:从尾部开始排列
+                *center：在主轴居中对齐（如果主轴是x轴则水平居中）
+                *space-around：平分剩余空间
+                *space-between：先两边贴边，再平分剩余空间（有*都代表重要，但是space-between特别重要）
+
+    3.3 flex-wrap：设置子元素是否换行
+        默认情况下，项目都排在一条线上，默认的子元素是不换行的，如果装不开会调小子元素的宽度放到父元素里面
+        属性值：nowrap（不换行）   wrap（换行）
+
+    3.4 align-items：设置侧轴（默认是y轴）上的子元素排列方式，在子项为单项的时候使用（单行）
+        属性值：*flex-start：从上到下
+                flex-end:从下到上
+                *center：挤在一起居中（垂直居中）
+                stretch:拉伸（默认值：父元素大小） 不能对子盒子设置高度
+
+    3.5 align-content：设置侧轴上的子元素的排列方式（多行）
+        设置子项在侧轴上的排列方式，并且只能用于子项出现换行的情况（多行），在单行下没有效果的
+        属性值：*flex-start：默认值在侧轴的头部开始排列
+                flex-end：在侧轴的尾部开始排列
+                *center:在侧轴中间显示
+                *space-around：子项在侧轴平分剩余空间
+                *space-between：子项在侧轴先分布在两头，再平分剩余空间
+                stretch：设置子项元素高于平分父元素高度
+
+    3.6 flex-flow:是flex-direction和flex-wrap属性的符合属性
+        例如：flex-flow:row wrap;
+
+4、flex布局子项常见属性
+    4.1 flex属性：定义子项目分配剩余空间，用flex来表示占多少份数
+        语法：.item(item表示项目名称) {flex:<number>; /*默认为0*/} 
+                里面不仅仅可以写数字，也可以写百分比，比如 a{flex:20%}
+
+    4.2 align-self:控制子项自己在侧轴上的排列方式
+        align-self属性允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性;默认值为auto，表示继承父元素的align-items属性，若没有父元素则等同于strech
+        语法: span:nth-child(2) {align-self: flex-end; } 设置自己在侧轴上的排列方式
+
+    4.3 order属性定义项目的排列顺序
+        数值越小排列越靠前，默认值为0，可以为负值
+        ps:和z-index不一样
+
+
+5、项目额外知识点
+    线性渐变：
+        语法1： background:linear-gradient(起始方向，颜色1，颜色2，...);没有webkit实际上浏览器无法运行
+                background:-webkit-linear-gradient(left, red ,blue);从左边开始红色到蓝色
+                background-webkit-linear-gradient(left top,red,blue);从左上角到右下角开始从红色到蓝色
+        ps:背景渐变必须添加浏览器私有前缀-webkit（移动端）
+            起始方向可以是：方位名词或者度数，如果省略默认是top

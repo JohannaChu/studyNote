@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浮动</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <!--常见的浮动方式：标准流、浮动、定位
+        1、标准流：按照块级元素和行内元素进行排列
+            
+        2、浮动最基本的应用：让多个块级盒子水平排列--网页布局第一准则：多个块级元素纵向排列找标准流，横向排列找浮动
+            写法：选择器 {float:none/left/right}
+                *浮动特性：（1）浮动元素会脱离标准流，浮动的盒子不再保留原本位置
+                          （2）如果多个盒子都设置了浮动，他们会按照属性值一行内显示并且顶端对齐排列
+                          （3）浮动具有行内块元素
+            网页布局第二准则：先设置盒子大小，再设置盒子位置
+            浮动的盒子只会影响后面的标准流，不会影响前面的
+
+            清除浮动：本质就是清除浮动元素脱离标准流造成的影响（策略是闭合浮动）
+                选择器{clear: both;}
+
+            常用的清除浮动：（1）额外标签法：在最后一个浮动的子元素后面添加一个额外标签,但结构化比较差（但新增的元素一定是块级元素而不能是行内块元素/行内元素）
+                          （2）父级添加overflow，会有溢出隐藏（例如：.box{overflow:hidden;}）
+                          （3）:after伪元素法（给父元素设置）
+                          （4）双伪元素清除浮动（给父元素设置）
+
+            
+            :after伪元素代码：
+            .clearfix:after {
+                content: "";
+                display: block;
+                height: 0;
+                clear: both;
+                visibility: hidden;
+            }
+            .clearfix { /*IE6,7专用*/
+                *zoom: 1;
+            }
+
+            双伪元素清除浮动：
+            .clearfix: before,
+            .clearfix: after {
+                display: table;
+            }
+            .clearfix: after {
+                clear: both;
+            }
+            .clearfix {
+                *zoom: 1;
+            }
+
+    -->
+</body>
+
+</html>

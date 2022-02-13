@@ -1,0 +1,44 @@
+/* CSS文件只写样式没有标签 */
+body {
+    font: 16px/28px  "Microsoft Yahei"
+}
+
+h1 {
+    text-align: center;
+    font-weight: 400;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    text-indent: 2em;
+}
+.source {
+    font-size: small;
+    text-align: center;
+    color: gray;
+}
+
+.search {
+    color: gray;
+    width: 170px;
+}
+
+.btn {
+    font-weight: 700;
+}
+.number {
+    font-size: small;
+    text-align: center;
+}
+
+.pic {
+    text-align: center;
+}
+
+.editor {
+    font-size: 12px;
+    color: gray;
+}

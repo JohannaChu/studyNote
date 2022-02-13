@@ -1,0 +1,146 @@
+.nav {
+    /* 这里很重要的：因为如果不隐藏多出的2px溢出，一部分文字就会围绕更多分类的浮动显示，可以尝试写123试试效果 */
+    overflow: hidden;
+}
+
+.sk {
+    position: absolute;
+    border-left: 1px solid #b1191a;
+    top: 40px;
+    left: 190px;
+    padding: 3px 0 0 14px;
+}
+
+.sk_list {
+    float: left;
+}
+
+.sk_list ul li {
+    float: left;
+}
+
+.sk_list ul li a {
+    display: block;
+    line-height: 47px;
+    padding: 0 30px;
+    font-size: 16px;
+    color: #000000;
+    font-weight: 700;
+}
+
+.sk_con {
+    float: left;
+}
+
+.sk_con ul li {
+    float: left;
+}
+
+.sk_con ul li a {
+    display: block;
+    line-height: 49px;
+    padding: 0 20px;
+    font-size: 14px; 
+    color: #666666;
+}
+
+.sk_con ul li:last-child a::after {
+    content: "\e91e";
+    font-family: 'icomoon';
+}
+
+/* .sk_bd {
+    float: left;
+} */
+
+.sk_bd ul li {
+    float: left;
+    margin-right: 10px;
+    /* padding-bottom: 10px; */
+    width: 290px;
+    height: 460px;
+    /* 原本有边框但是看不到在经过鼠标时才不会产生向下抖动的效果（因为边框有距离只能往下） */
+    border: 1px solid transparent;
+    background-color: white;
+}
+
+.sk_bd ul li:hover {
+    border: 1px solid #e12228;
+}
+
+.sk_bd ul li:nth-child(4n) {
+    margin-right: 0;
+}
+
+.pic_bd {
+    padding: 5px 0 0 15px;
+}
+.sk_bd ul li p {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 10px;
+}
+
+.discount {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e60012;
+    padding-right: 12px;
+}
+
+.normal {
+    font-size: 14px;
+    color: #a4a4a4;
+    text-decoration: line-through;
+}
+
+.sk_bottom {
+    margin-top: 13px;
+    height: 26px;
+    line-height: 26px;
+}
+
+.sk_bottom p{
+    float: left;
+    font-size: 14px;
+    color: #666666;
+}
+
+.bar {
+    float: left;
+    width: 135px;
+    height: 13px;
+    margin-left: 13px;
+    margin-top: 6px;
+    border: 1px solid #e12228;
+    border-radius: 7px;
+}
+
+.bar_in {
+    width: 80%;
+    height: 100%;
+    background-color: #e12228;
+}
+
+.next {
+    float: left;
+    font-size: 14px;
+    color: #666666;
+    padding-left: 6px; 
+}
+
+.number {
+    font-size: 16px;
+    color: #e12228;
+}
+
+button {
+    overflow: hidden;
+    width: 289px;
+    height: 50px;
+    padding-bottom: 13px;
+    background-color: #b1191a;
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+}

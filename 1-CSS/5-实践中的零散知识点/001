@@ -1,0 +1,96 @@
+1、当图片放在div盒子或者a属性时（使用img形式），调节div盒子的大小可以调整到图片大小;
+   如果使用的是CSS中的url()则需要用到background-size属性
+
+    ;例子
+HTML结构：
+ <nav>
+    <a href="#">
+        <img src="upload/nav1.webp" alt="">
+        <span>京东超市</span>
+    </a>
+</nav>
+
+CSS样式：
+.brand div {
+    width: 33.33%;
+    float: left;
+}
+
+.brand div img {
+    width: 100%;
+    }
+
+2、定位为固定定位的盒子必须要有高度，因为他是与父级元素没有关系，只以浏览器或者页面为准
+
+3、写伪元素结构的时候一定不能忘记content，例如::after和::before;结构伪类选择器则不需要，如nth-child()
+
+4、图片和文字在上下两行的做法：
+        做法1:如果是链接，可以在链接里面写字然后在a里面插入background:url(); 然后调整url的位置例如 background: url(../images/hotel.png) no-repeat bottom center; 代表靠底端中间对齐  CSS中的background可以直接写
+        做法2:如果是链接，可以在链接里面写字然后在CSS样式中使用伪类选择器::before，给一个宽度和高度装照片，下面例子是二倍精灵图的例子; 
+.user::before {
+    content: "";
+    /* 伪元素选择器是行内元素，没有大小 */
+    display: block;
+    width: 23px;
+    height: 23px;
+    background: url(../images/sprite.png) no-repeat -59px -194px;
+    background-size: 104px auto;
+}
+HTML结构：<a href="#" class="user">我 的</a>
+
+    做法3：写两个span盒子,然后在CSS样式中先修改主轴y轴使其在y轴显示，再调整侧轴居中（其中装有照片的span盒子要有高度和宽度）
+           或者一个a一个span
+.subnav-entry a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.subnav-entry-icon {
+    height: 28px;
+    width: 28px;
+    background: url(../upload/subnav-bg.png) no-repeat 0 0;
+    background-size: 28px;
+}
+
+HTML结构：
+    <ul class="subnav-entry">
+        <li>
+            <a href="#">
+                <span class="subnav-entry-icon">123</span>
+                <span>电话费</span>
+            </a>
+        </li>
+    </ul>
+    做法3：或者一个img 一个p
+HTML结构：
+    <footer class="footer">
+        <a href="#">
+            <img src="icon/home.png" alt="">
+            <p>首页</p>
+        </a>
+    </footer>
+CSS结构：
+
+
+5、当伪类选择器有position: absolute或者float时，行内元素::after或者::before变成块级元素有了高度和宽度
+    就不需要再写display:block;
+
+6、居中的方法：
+    没有特殊情况可以用margin(0 auto)
+    当定位是固定定位或者其他定位时(使用定位时)，需要用到top left; 可以left(50%); transform:translateX(-50%)
+
+7、可以给a设置text-align:center;
+    img是行内元素，但是因为他是可置换类型的元素，所以可以设置宽高，表现出行内块元素的特征
+
+8、当img宽高比例不一样时，给img设定宽度和高度，不会自己进行缩放，有多个的时候需要overflow:hidden才能对齐
+    a {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+            width: 1.04rem;
+            height: 1.093333rem;
+            overflow: hidden;
+        }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 1、精灵图
+        （1）精灵技术的目的：为了有效的减少服务器接收和发送请求的次数，提高页面的加载速度
+        （2）使用：主要借助background-position来显示，x轴和y轴的坐标，因此一般精灵图的坐标都是负数：x轴右边走是正值，左边走是负值；y轴向下走是正值，向上负值
+        
+        2、CSS三角形的做法：设置一个盒子宽高都是0，但是三边边框为透明的盒子
+        例如：.box{weight:0; height:0; border:1px solid transprent; border-top-color:pink;}
+
+        3、CSS用户样式更改
+        （1）鼠标样式：cursor {cursor:default默认，小白光标/pointer小手/move移动/text文本/not-allowed禁止}
+        （2）轮廓线：outline:0/none;可以去掉表单的蓝色轮廓线
+        （3）防止拖拽文本域：<textarea>表单时常有可拖拽放大的情况，用textarea{resize:none}取消
+        （4）让图片和文字垂直居中：vertical-align（设置一个元素的垂直对齐方式，但是只对行内元素或者行内块元素有效） 
+            vertical-align:top/middle/bottom/baseline(默认)
+        （5）解决图片底部默认空白缝隙问题（是因为图片默认和基线对齐，留有空隙）
+            方法1：vertical-align：bottom/middle/top；（提倡使用）
+            方法2：把图片转化为块级元素 display：block
+        （6）溢出的文字用省略号显示：
+            情况1：单行文本溢出
+                {white-space:nowrap 先强制一行内显示文本
+                overflow: hidden; 超出的部分隐藏
+                text-overflow: ellipsis; 文字用省略号代替超出的部分}
+        
+        4、布局技巧
+        （1）margin负值：负值使得两个浮动的盒子出现细线不重叠，如果要移动时出现边框相同颜色，则可以使用：
+                    鼠标经过某个盒子的时候，提高当前盒子的层级（如果没有定位，则加相对定位（保留位置），如果有定位则加z-index）
+
+        （2）文字围绕浮动元素：浮动元素不会压住文字
+        （3）用行内块元素做下面的第几页以及跳转到第几页
+        （4）CSS三角强化：保留右边的边框有颜色；样式都是solid；上边框的宽度要大，有边框宽度稍小，其他边框为0
+                    border-color:transparent red transparent transparent; border-style:solid；border-width:100px 50px 0 0;
+        !-->
+</body>
+
+</html>
