@@ -4,7 +4,6 @@ My web development tutorials, including CSS、BOM、DOM、ES6、JavaScript、Web
 CSS中的笔记主要以注释的形式记录在HTML例子中，可以配合例子一起观看理解;部分笔记也以文本形式记录
 
 JavaScript中包含(以markdown形式记录)：
-- 官网地址：<https://web.qianguyihao.com>
 - JavaScript基础知识(例如基本数据类型、运算符、流程控制、作用域等) --> 推荐
 - DOM(包括事件基础、操作元素、事件高级、事件对象等) --> 推荐
 - BOM(包括BOM的构成、窗口加载事件等)
