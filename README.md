@@ -1,7 +1,7 @@
 # 欢迎来到 JohannaChu 的 前端 快速入门代码仓库
 My web development tutorials, including CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
 
-1、CSS中的笔记主要以注释的形式记录在HTML例子中，可以配合例子一起观看理解;部分笔记也以文本形式记录
+1、CSS中的笔记主要以注释的形式记录在HTML例子中，可以配合例子一起观看理解; 部分笔记也以文本形式记录
 
 2、JavaScript中包含(以markdown形式记录)：
 - JavaScript基础知识(例如基本数据类型、运算符、流程控制、作用域等) --> 推荐
