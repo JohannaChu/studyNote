@@ -1797,8 +1797,8 @@
 
 >方式3: 原型链+借用构造函数的组合继承
 >
->1. 利用原型链实现对父类型对象的方法继承
->2. 利用super()借用父类型构建函数初始化相同属性
+>1. 利用原型链实现对父类型对象的**方法**继承
+>2. 利用super()借用父类型构建函数初始化相同**属性**
 >
 >```js
 >function Person(name, age) {
@@ -2055,13 +2055,11 @@
 >
 >>答案就是——event loop（事件循环）。
 >
->**注：`虽然nodejs中的也存在与传统浏览器环境下的相似的事件循环。然而两者间却有着诸多不同，故把两者分开，单独解释`。**
 
 ### Ⅱ-浏览器环境下JS引擎的事件循环机制
 
 #### ① 执行栈概念
 
->执行上下文栈详情可以看上方笔记 -->[函数高级的2、执行上下文与执行上下文栈](#2、执行上下文与执行上下文栈),此处继续进行一次概述加深理解
 >
 >当javascript代码执行的时候会将不同的变量存于内存中的不同位置：`堆（heap）`和`栈（stack）`中来加以区分。其中，堆里存放着一些对象。而栈中则存放着一些基础类型变量以及对象的指针。 `但是我们这里说的执行栈和上面这个栈的意义却有些不同`。
 >
@@ -2091,222 +2089,9 @@
 >
 >以上的事件循环过程是一个宏观的表述，实际上因为异步任务之间并不相同，因此他们的执行优先级也有区别。`不同的异步任务被分为两类：微任务（micro task）和宏任务（macro task）`,此部分看下方详解
 
-### Ⅲ-宏任务(**macro task**)与微任务(**micro task**)
-
-> 宏任务与微任务亦属于[Ⅱ-浏览器环境下JS引擎的事件循环机制](#Ⅱ-浏览器环境下JS引擎的事件循环机制)内知识点,但本人觉得比较重要,将其提高至其知识点
-
-#### ① 宏任务队列与微任务队列解释
-
->顾名思义,宏任务放至宏任务队列(`简称宏队列`)中、微任务放至微任务队列(`简称微队列`)中
->
->1. JS中用来存储待执行回调函数的队列包含2个不同特定的列队
->   - `宏队列`:用来保存待执行的宏任务(回调),比如:`定时器`回调/ajax回调/dom事件回调
->   - `微队列`:用来保存待执行的微任务(回调),比如:`Promise`的回调/muntation回调
->2. JS执行时会区别这2个队列:
->     - JS执行引擎首先必须执行所有的`初始化同步任务`代码
->     - 每次准备取出第一个`宏任务执行前`,都要将所有的`微任务`一个一个取出来执行
->
->前面我们介绍过，在一个事件循环中，异步事件返回结果后会被放到一个任务队列中。然而，根据这个异步事件的类型，这个事件实际上会被对应的宏任务队列或者微任务队列中去。并且在当前执行栈为空的时候，主线程会 查看微任务队列是否有事件存在。如果不存在，那么再去宏任务队列中取出一个事件并把对应的回到加入当前执行栈；如果存在，则会依次执行队列中事件对应的回调，直到微任务队列为空，然后去宏任务队列中取出最前面的一个事件，把对应的回调加入当前执行栈...如此反复，进入循环。
->
->我们只需记住:** `当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行` **
-
-#### ② 原理图
-
->![Promise系统学习_宏任务微任务原理图](image/Promise系统学习_宏任务微任务原理图.png) 
->
-
-
-
-#### ③ 由代码逆向理解宏任务与微任务
-
-> 代码示例
->
-> ```js
-> setTimeout(() => { 
->       console.log('timeout callback1（）')//立即放入宏队列
->       Promise.resolve(3).then(
->         value => { 
->           console.log('Promise onResolved3()', value)//当这个宏任务执行后 立马放入微队列,所以这个微任务执行完后下个宏任务才能执行 
->         }
->       )
->     }, 0)
-> 
->     setTimeout(() => { 
->       console.log('timeout callback2（）') //立即放入宏队列,
->     }, 0)
-> 
->     Promise.resolve(1).then(
->       value => { 
->         console.log('Promise onResolved1()', value)//立即放入微队列
->         setTimeout(() => {
->           console.log('timeout callback3（）', value) //立即放入宏任务
->         }, 0)
->       }
->     )
-> 
->     Promise.resolve(2).then(
->       value => { 
->         console.log('Promise onResolved2()', value)//立即放入微队列
->       }
->     )
-> console.log('同步代码') //同步代码立即执行
-> ```
->
-> 结果
->
-> ```js
->  '同步代码',
->   'Promise onResolved1()',
->   'Promise onResolved2()',
->   'timeout callback1（）',
->   'Promise onResolved3()',
->   'timeout callback2（）',
->   'timeout callback3（）'
-> ```
-
-### Ⅳ-**node环境下的事件循环机制**
-
->`不学node的小伙伴就跳过此部分直接去下一节Web Workers笔记吧`
-
-#### ① **与浏览器环境有何不同?**
-
->在node中，事件循环表现出的状态与浏览器中大致相同。不同的是node中有一套自己的模型。node中事件循环的实现是依靠的libuv引擎。我们知道node选择chrome v8引擎作为js解释器，v8引擎将js代码分析后去调用对应的node api，而这些api最后则由libuv引擎驱动，执行对应的任务，并把不同的事件放在不同的队列中等待主线程执行。 `因此实际上node中的事件循环存在于libuv引擎中`。
-
-#### ② **事件循环模型**
-
->下面是一个libuv引擎中的事件循环的模型:
->
->```js
->//libuv引擎中的事件循环的模型
->┌───────────────────────┐
->┌─>│        timers         │
->│  └──────────┬────────────┘
->│  ┌──────────┴────────────┐
->│  │     I/O callbacks     │
->│  └──────────┬────────────┘
->│  ┌──────────┴────────────┐
->│  │     idle, prepare     │
->│  └──────────┬────────────┘      ┌───────────────┐
->│  ┌──────────┴────────────┐      │   incoming:   │
->│  │         poll          │<──connections───     │
->│  └──────────┬────────────┘      │   data, etc.  │
->│  ┌──────────┴────────────┐      └───────────────┘
->│  │        check          │
->│  └──────────┬────────────┘
->│  ┌──────────┴────────────┐
->└──┤    close callbacks    │
->   └───────────────────────┘
->```
->
->*注：模型中的每一个方块代表事件循环的一个阶段*
->
->这个模型是node官网上的一篇文章中给出的，我下面的解释也都来源于这篇文章。我会在文末把文章地址贴出来，有兴趣的朋友可以亲自与看看原文。
-
-#### ③ **事件循环各阶段详解**
-
->从上面这个模型中，我们可以大致分析出node中的事件循环的顺序：
->
->> 外部输入数据-->轮询阶段(poll)-->检查阶段(check)-->关闭事件回调阶段(close callback)-->定时器检测阶段(timer)-->I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段...
->
->这些阶段大致的功能如下：
->
->- timers(定时器检测阶段): 这个阶段执行定时器队列中的回调如 `setTimeout()` 和 `setInterval()`。
->- I/O callbacks(I/O事件回调阶段): 这个阶段执行几乎所有的回调。但是不包括close事件，定时器和`setImmediate()`的回调。
->- idle, prepare: 这个阶段仅在内部使用，可以不必理会。
->- poll(轮询阶段): 等待新的I/O事件，node在一些特殊情况下会阻塞在这里。
->- check(检查阶段): `setImmediate()`的回调会在这个阶段执行。
->- close callbacks(关闭事件回调阶段): 例如`socket.on('close', ...)`这种close事件的回调。
->
->下面我们来按照代码第一次进入libuv引擎后的顺序来详细解说这些阶段：
-
-##### **poll(轮询阶段)**
-
->当个v8引擎将js代码解析后传入libuv引擎后，循环首先进入poll阶段。poll阶段的执行逻辑如下： 先查看poll queue中是否有事件，有任务就按先进先出的顺序依次执行回调。 当queue为空时，会检查是否有setImmediate()的callback，如果有就进入check阶段执行这些callback。但同时也会检查是否有到期的timer，如果有，就把这些到期的timer的callback按照调用顺序放到timer queue中，之后循环会进入timer阶段执行queue中的 callback。 这两者的顺序是不固定的，收到代码运行的环境的影响。如果两者的queue都是空的，那么loop会在poll阶段停留，直到有一个i/o事件返回，循环会进入i/o callback阶段并立即执行这个事件的callback。
->
->值得注意的是，poll阶段在执行poll queue中的回调时实际上不会无限的执行下去。`有两种情况poll阶段会终止执行poll queue中的下一个回调：1.所有回调执行完毕。2.执行数超过了node的限制。`
-
-##### check(检查阶段)
-
->check阶段专门用来执行`setImmediate()`方法的回调，当poll阶段进入空闲状态，并且setImmediate queue中有callback时，事件循环进入这个阶段。
-
-##### close callbacks(关闭事件回调阶段)
-
->当一个socket连接或者一个handle被突然关闭时（例如调用了`socket.destroy()`方法），close事件会被发送到这个阶段执行回调。否则事件会用`process.nextTick（）`方法发送出去。
-
-##### timers(定时器检测阶段)
-
->这个阶段以先进先出的方式执行所有到期的timer加入timer队列里的callback，一个timer callback指得是一个通过setTimeout或者setInterval函数设置的回调函数。
-
-##### I/O callbacks(I/O事件回调阶段)
-
->如上文所言，这个阶段主要执行大部分I/O事件的回调，包括一些为操作系统执行的回调。例如一个TCP连接生错误时，系统需要执行回调来获得这个错误的报告。
-
-#### ④ **process.nextTick,setTimeout与setImmediate的区别与使用场景**
-
->在node中有三个常用的用来推迟任务执行的方法：process.nextTick,setTimeout（setInterval与之相同）与setImmediate
-
-这三者间存在着一些非常不同的区别：
-
-##### **process.nextTick()**
-
->尽管没有提及，但是实际上node中存在着一个特殊的队列，即nextTick queue。这个队列中的回调执行虽然没有被表示为一个阶段，当时这些事件却会在每一个阶段执行完毕准备进入下一个阶段时优先执行。当事件循环准备进入下一个阶段之前，会先检查nextTick queue中是否有任务，如果有，那么会先清空这个队列。与执行poll queue中的任务不同的是，这个操作在队列清空前是不会停止的。这也就意味着，错误的使用`process.nextTick()`方法会导致node进入一个死循环。。直到内存泄漏。
->
->使用这个方法比较合适呢？下面有一个例子：
->
->```js
->const server = net.createServer(() => {}).listen(8080);
->server.on('listening', () => {});
->```
->
->这个例子中当，当listen方法被调用时，除非端口被占用，否则会立刻绑定在对应的端口上。这意味着此时这个端口可以立刻触发listening事件并执行其回调。然而，这时候`on('listening)`还没有将callback设置好，自然没有callback可以执行。为了避免出现这种情况，node会在listen事件中使用`process.nextTick()`方法，确保事件在回调函数绑定后被触发。
-
-##### **setTimeout()和setImmediate()**
-
->在三个方法中，这两个方法最容易被弄混。实际上，某些情况下这两个方法的表现也非常相似。然而实际上，这两个方法的意义却大为不同。
->
->`setTimeout()`方法是定义一个回调，并且希望这个回调在我们所指定的时间间隔后第一时间去执行。注意这个“第一时间执行”，这意味着，受到操作系统和当前执行任务的诸多影响，该回调并不会在我们预期的时间间隔后精准的执行。执行的时间存在一定的延迟和误差，这是不可避免的。node会在可以执行timer回调的第一时间去执行你所设定的任务。
->
->`setImmediate()`方法从意义上将是立刻执行的意思，但是实际上它却是在一个固定的阶段才会执行回调，即poll阶段之后。有趣的是，这个名字的意义和之前提到过的`process.nextTick()`方法才是最匹配的。node的开发者们也清楚这两个方法的命名上存在一定的混淆，他们表示不会把这两个方法的名字调换过来---因为有大量的node程序使用着这两个方法，调换命名所带来的好处与它的影响相比不值一提。
->
->`setTimeout()`和不设置时间间隔的`setImmediate()`表现上及其相似。猜猜下面这段代码的结果是什么？
->
->```js
->setTimeout(() => {
->    console.log('timeout');
->}, 0);
->
->setImmediate(() => {
->    console.log('immediate');
->});
->```
->
->实际上，答案是不一定。没错，就连node的开发者都无法准确的判断这两者的顺序谁前谁后。这取决于这段代码的运行环境。运行环境中的各种复杂的情况会导致在同步队列里两个方法的顺序随机决定。但是，在一种情况下可以准确判断两个方法回调的执行顺序，那就是在一个I/O事件的回调中。下面这段代码的顺序永远是固定的：
->
->```js
->const fs = require('fs');
->
->fs.readFile(__filename, () => {
->    setTimeout(() => {
->        console.log('timeout');
->    }, 0);
->    setImmediate(() => {
->        console.log('immediate');
->    });
->});
->```
->
->答案永远是：
->
->```js
->immediate
->timeout
->```
->
->因为在I/O事件的回调中，setImmediate方法的回调永远在timer的回调前执行。
 
 ## 5、Web Workers
 
->想了解更多可以点击链接查看更多,此处只是大致了解学习   -->[Web Workers](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers)
 >
 >1. H5规范提供了js分线程的实现, 取名为: Web Workers
 >2. 相关API
@@ -2317,110 +2102,6 @@
 >  * worker内代码不能操作DOM(更新UI)
 >  * 不能跨域加载JS
 >  * 不是每个浏览器都支持这个新特性
-
-### Ⅰ-抛砖引玉,引出用处
-
->还是拿斐波那契（Fibonacci）数列来做例子,这东西效率低,可以拿来模拟
->
->```html
-><body>
-><input type="text" placeholder="数值" id="number">
-><button id="btn">计算</button>
-><script type="text/javascript">
->  // 1 1 2 3 5 8    f(n) = f(n-1) + f(n-2)
->  function fibonacci(n) {
->    return n<=2 ? 1 : fibonacci(n-1) + fibonacci(n-2)  //递归调用
->  }
->  // console.log(fibonacci(7))
->  var input = document.getElementById('number')
->  document.getElementById('btn').onclick = function () {
->    var number = input.value
->    var result = fibonacci(number)
->    alert(result)
->  }
-></script>
->```
->
->当我运行此行代码,传入计算数值为50左右(有的甚至更低),整个页面就会卡住好久的时间不能操作(计算结束后才会弹窗,但是未弹窗的这段时间用户并不能进行操作),这时候就会发现单线程的弊端了
-
-### Ⅱ-尝试使用
-
->1. H5规范提供了js分线程的实现, 取名为: Web Workers
->2. 相关API
->  * Worker: 构造函数, 加载分线程执行的js文件
->  * Worker.prototype.onmessage: 用于接收另一个线程的回调函数
->  * Worker.prototype.postMessage: 向另一个线程发送消息
->3. 不足
->  * worker内代码不能操作DOM(更新UI)
->  * 不能跨域加载JS
->  * 不是每个浏览器都支持这个新特性
-
-#### ① 主线程
-
->1. 创建一个Worker对象
->2. 绑定[主线程接收分线程返回的数据]方法
->3. 主线程向分线程发送数据,然后等待接受数据
->4. 接收到分线程回馈的数据,将数据进行处理(如弹窗)
->
->```html
-><body>
-><input type="text" placeholder="数值" id="number">
-><button id="btn">计算</button>
-><script type="text/javascript">
->  var input = document.getElementById('number')
->  document.getElementById('btn').onclick = function () {
->    var number = input.value
->
->    //创建一个Worker对象
->    var worker = new Worker('worker.js')
->    // 绑定接收消息的监听
->    worker.onmessage = function (event) { //此处变成回调代码,会在初始化工作完成后才会进行
->      console.log('主线程接收分线程返回的数据: '+event.data)
->      alert(event.data)
->    }
->
->    // 向分线程发送消息
->    worker.postMessage(number)
->    console.log('主线程向分线程发送数据: '+number)
->  }
->  // console.log(this) // window
->
-></script>
-></body>
->```
-
-#### ② 分线程
-
->将计算放置分线程中
->
->`注意`:alert(result)  alert是window的方法, 在分线程不能调用,`分线程中的全局对象不再是window`, 所以在分线程中不可能更新界面
->
->```js
->//worker.js
->function fibonacci(n) {
->  return n<=2 ? 1 : fibonacci(n-1) + fibonacci(n-2)  //递归调用
->}
->
->console.log(this)
->this.onmessage = function (event) {
->  var number = event.data
->  console.log('分线程接收到主线程发送的数据: '+number)
->  //计算
->  var result = fibonacci(number)
->  postMessage(result)
->  console.log('分线程向主线程返回数据: '+result)
->  // alert(result)  alert是window的方法, 在分线程不能调用
->  // 分线程中的全局对象不再是window, 所以在分线程中不可能更新界面
->}
->```
-
-### Ⅲ-流程原理图
-
-> ![image-20210729173545339](image/image-20210729173545339.png)
-
-
-
-
 
 
 
