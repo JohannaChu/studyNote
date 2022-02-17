@@ -2092,18 +2092,68 @@
 
 ## 5、Web Workers
 
+>### Ⅰ-web worker是什么？
+>在 HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可相应。web worker 是运行在后台的` js`，独立于其他脚本，不会影响页面的性能。 并且通过 `postMessage` 将结果回传到主线程。这样在进行复杂操作的时候，就不会阻塞主线程了。
 >
->1. H5规范提供了js分线程的实现, 取名为: Web Workers
->2. 相关API
->  * Worker: 构造函数, 加载分线程执行的js文件
->  * Worker.prototype.onmessage: 用于接收另一个线程的回调函数
->  * Worker.prototype.postMessage: 向另一个线程发送消息
->3. 不足
->  * worker内代码不能操作DOM(更新UI)
->  * 不能跨域加载JS
->  * 不是每个浏览器都支持这个新特性
 
-
+>### Ⅱ-web worker的使用
+>* Web worker是HTML5提供的一个JavaScript多线程解决方案，可以将一些大计算量的代码交由给运行而不冻结用户界面
+>* 但是子线程完全受主线程控制，且不得操作DOM，因此这个新标准并没有改变JavaScript单线程的本质
+>* 使用：（1）创建在分线程执行的`js`文件  （2）在主线程中的`js`中发消息并设置回调
+>
+>```html
+>//主线程
+><input type="text" placeholder="数值" id="number">
+><button id="btn">计算</button>
+><script type="text/javascript">
+>
+>  var input = document.getElementById('number')
+>  document.getElementById('btn').onclick = function(){
+>      var number = input.value
+>
+>      //创建一个worker对象
+>      var worker = new Worker('worker.js')
+>      //绑定接收消息的监听
+>      worker.onmessage = function(event){
+>          console.log('主线程接收分线程返回的数据：' + event.data)
+>          alert(event.data)
+>      }
+>  }
+>
+>  worker.postMessage(number)
+>  console.log('主线程向分线程发送消息' + event.number)
+>
+></script>
+>```
+>
+>```js
+>//分线程
+>function fibonacci(n) {
+>    return n<=2? 1:fibonacci(n-1) + fibonacci(n-2)
+>}
+>
+>var onmessage = function (event) {
+>    var number = event.data
+>    console.log('分线程接收到主线程发送的数据' + number)
+>    //计算
+>    var result = fibonacci(number)
+>    postMessage(result)
+>    console.log('分线程向主线程返回数据' + result)
+>}
+>```
+>
+>
+>### Ⅲ-相关API
+>
+>* `Worker`: 构造函数, 加载分线程执行的`js`文件
+>* `Worker.prototype.onmessage`: 用于接收另一个线程的回调函数
+>* `Worker.prototype.postMessage`: 向另一个线程发送消息
+>
+>
+>### Ⅳ-不足
+>* worker内代码不能操作DOM(更新UI)
+>* 不能跨域加载JS
+>* 不是每个浏览器都支持这个新特性
 
 
 
