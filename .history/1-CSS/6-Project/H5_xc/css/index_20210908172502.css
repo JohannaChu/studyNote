@@ -65,7 +65,6 @@ body {
 .search-index {
     position: fixed;
     display: flex;
-    /* positon的fixed要有宽度，以及top和left */
     top: 0;
     left: 50%;
     /* 这里是为了兼容老版本 */
