@@ -1,7 +1,6 @@
 /* 这里是流式布局的例子，流式布局主要不用固定的宽度而用百分比 */
 img,a {-webkit-touch-callout:none;}
 
-/* 在移动端浏览器默认的外观在IOS上加上这个属性才能给按钮和输入框自定义样式(input) */
 input {-webkit-appearance:none;}
 
 
@@ -21,14 +20,12 @@ input {-webkit-appearance:none;}
 * {
     margin: 0;
     padding: 0;
-    /* 这里的盒子模型修改padding和margin后不会撑大原有的盒子大小-CSS3模型 */
-    /* 标准盒子模型为box-sizing:content-box */
+    /* 这里的盒子模型修改padding和margin后不会撑大原有的盒子大小 */
     box-sizing: border-box;
 }
 
 
 body {
-    /* 这里的设置就是流式布局的设置，宽度用百分比设置 */
     width: 100%;
     /* 设置最小宽度为320px，小于则不能进行缩放 */
     min-width: 320px;
@@ -78,7 +75,6 @@ a {
 }
 
 .app ul li:nth-child(1) img {
-    /* 伪类选择器：权重为10 */
     /* 图片是行内块元素 */
     width: 10px;
 }

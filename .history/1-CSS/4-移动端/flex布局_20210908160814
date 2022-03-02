@@ -43,7 +43,7 @@
                 *space-between：子项在侧轴先分布在两头，再平分剩余空间
                 stretch：设置子项元素高于平分父元素高度
 
-    3.6 flex-flow:是flex-direction和flex-wrap属性的复合属性
+    3.6 flex-flow:是flex-direction和flex-wrap属性的符合属性
         例如：flex-flow:row wrap;
 
 4、flex布局子项常见属性

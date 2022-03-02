@@ -28,7 +28,6 @@ input {-webkit-appearance:none;}
 
 
 body {
-    /* 这里的设置就是流式布局的设置，宽度用百分比设置 */
     width: 100%;
     /* 设置最小宽度为320px，小于则不能进行缩放 */
     min-width: 320px;
@@ -78,7 +77,6 @@ a {
 }
 
 .app ul li:nth-child(1) img {
-    /* 伪类选择器：权重为10 */
     /* 图片是行内块元素 */
     width: 10px;
 }
