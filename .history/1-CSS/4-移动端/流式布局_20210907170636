@@ -1,0 +1,67 @@
+1、视口:视口是浏览器显示页面内容的屏幕区域，可以分为布局视口，视觉视口和理想视口
+    1.1 meta视口标签：
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0">
+        width:款苏设置的是viewport宽度，可以设置device-width特殊值
+        initial-scale:初始缩放比，大于0的数字
+        maximum-scale:最大缩放比，大于0的数字
+        minimum-scale:最下缩放比，大于0的数字
+        user-scalable:用户是否可以缩放，yes或者no（1或0）
+
+2、二倍图：
+    2.1 物理像素&物理像素比
+        物理像素点指的是屏幕显示的最小颗粒，是物理真实存在的；一个px的能显示的物理像素点的个数，称为物理像素比或者屏幕像素比
+        在开发时1px不一定等于一个物理像素（PC端时等于的，但是移动端不尽相同）
+
+    2.2 二倍图使用
+        常将需要的图片缩放为原来的一半，比如实际需要一个50*50的图片，经过手机缩放就变成了100*100
+        因此直接准备一个100*100的图片，再将其缩小为50*50
+
+    2.3 背景缩放
+        background-size:背景图片宽度 背景图片高度;这里的属性只是规定背景图像url的尺寸，不规定插入图像img的尺寸
+        单位： 长度/百分比/cover/contain;
+            如果只写一个数字则默认等比例缩放;里面的单位可以跟 % ，百分比是相对于父盒子来说的
+            background-size: cover; 这里的cover等比例拉伸，要完全覆盖div盒子，可能右部分背景图片显示不全(把背景图片扩展至足够大，以使背景图像完全覆盖背景区域)
+            background-size:contain;代表高度和宽度等比例拉伸，当宽度或者高度铺满div盒子就不再进行拉伸，可能右部分空白区域（把图像扩展至最大尺寸，使其宽度或者高度完全适应内容区域）
+
+3、移动端开发
+    3.1 常见开发方案：单独制作移动端界面&响应式页面 两种方案
+
+    3.2 常见开发问题
+        盒子模型box-sizing
+            传统模型宽度计算：盒子的宽度=CSS中设置的width+border+padding;border-sizing:content-box;
+            CSS3盒子模型：盒子的宽度=CSS中设置的宽度width（里面包含了border和padding）;border-sizing:border-box;
+
+        特殊样式：
+            CSS3盒子模型
+                boxsizing:border-box;
+                -webkit-box-sizing:border-box;
+            点击高亮我们需要清除，设置为transparent(一般是a链接，移动端会出现高亮)
+                -webkit-tap-highlight-color:transparent;
+            在移动端浏览器默认的外观在IOS上加上这个属性才能给按钮和输入框自定义样式(input)
+                -webkit-appearance:none;
+            禁用长按页面时的弹出菜单
+                img,a {-webkit-touch-callout:none;}
+
+4、移动端常见布局
+    单独制作移动端页面（主流）
+        流式布局（也称百分比布局）
+        flex弹性布局（强烈推荐）
+        less+rem+媒体查询布局
+        混合布局
+
+    响应式页面兼容移动端（其次）
+        媒体查询
+        bootstrap
+
+    4.1 流式布局（也称百分比布局，也称非固定像素布局）
+        通过盒子的宽度设置成的百分比来根据屏幕的像素进行伸缩，不受固定像素的限制，内容向两侧填充
+        流式布局方式式移动web开发使用的比较常见的布局方式
+        一般设定最大宽/高度和最小宽/高度
+            max-width 最大宽度（max-height 最大高度）
+            min-width 最小宽度（min-height 最小高度）
+
+5、零散知识
+    5.1 二倍精灵图的做法
+        在firework(一个测量软件)里面将精灵图等比例缩放为原来的一半
+        之后 根据大小测量坐标
+        注意代码里面的background-size也要写精灵图原来宽度的一半
