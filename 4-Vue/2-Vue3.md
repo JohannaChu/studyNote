@@ -359,13 +359,21 @@ Object.defineProperty(p,'age',{
           //有人读取p的某个属性时调用
           get(target,propName){ //traget是在new Proxy时传入的对象(源数据),也就是person;propName是属性名
               console.log(`有人读取了p身上的${propName}属性`) //例如person.name,propName则是name
+<<<<<<< HEAD
               return target[propName] 
+=======
+              return target[propName]
+>>>>>>> 48e02d860db4fb1a4f304ab50f7072b9149e05f4
               return Reflect.get(target,propName)
           },
           //有人修改p的某个属性、或给p追加某个属性时调用
           set(target,propName,value){
               console.log(`有人修改了p身上的${propName}属性，我要去更新界面了！`)
+<<<<<<< HEAD
               traget[propName] = value //这种写法实际上是在修改源数据
+=======
+              traget[propName] = value
+>>>>>>> 48e02d860db4fb1a4f304ab50f7072b9149e05f4
               Reflect.set(target,propName,value)
           },
           //有人删除p的某个属性时调用
