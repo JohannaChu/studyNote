@@ -87,6 +87,8 @@ vite官网：https://vitejs.cn
 
 <img src="https://cn.vitejs.dev/assets/bundler.37740380.png" style="width:500px;height:280px;float:left" /><img src="https://cn.vitejs.dev/assets/esm.3070012d.png" style="width:480px;height:280px" />
 
+
+
 ```bash
 ## 创建工程
 npm init vite-app <project-name>
@@ -96,6 +98,21 @@ cd <project-name>
 npm install
 ## 运行
 npm run dev
+```
+
+## 3、改变
+```vue
+在main.js里面不相同的地方：
+
+//引入放入不再是Vue构造函数，而是引入一个名为createApp的工厂函数
+import { createApp } from 'vue'
+import App from './App.vue'
+
+//创建应用实例对象-app(类似之前Vue2里面的vm,但是app比vm更“轻”-没有那么多属性和方法)
+const app = createApp(App)
+
+//挂载
+app.mount('#app')
 ```
 
 # 二、常用 Composition API
@@ -116,25 +133,147 @@ npm run dev
       - 但在setup中<strong style="color:#DD5145">不能访问到</strong>Vue2.x配置（data、methos、computed...）。
       - 如果有重名, setup优先。
    2. setup不能是一个async函数，因为返回值不再是return的对象, 而是promise, 模板看不到return对象中的属性。（后期也可以返回一个Promise实例，但需要Suspense和异步组件的配合）
+```vue
+//组件中所用到的：数据、方法等等，均要配置在setup中
+setup(){
+    //数据
+    let name = '张三'
+    let age = 18
+    let a = 200
+
+    //方法
+    function sayHello(){
+        alert(`我叫${name}，我${age}岁了，你好啊！`)
+    }
+return {
+    name,
+    age,
+    sayHello,
+    test2,
+    a
+}
+```
 
 ##  2.ref函数
 
-- 作用: 定义一个响应式的数据
-- 语法: ```const xxx = ref(initValue)``` 
+- 作用: 定义一个响应式的数据，实际上是RefImpl
+- 语法: ```const xxx = ref(initValue)``` --> const只能修改数组和对象的数据
   - 创建一个包含响应式数据的<strong style="color:#DD5145">引用对象（reference对象，简称ref对象）</strong>。
   - JS中操作数据： ```xxx.value```
   - 模板中读取数据: 不需要.value，直接：```<div>{{xxx}}</div>```
 - 备注：
   - 接收的数据可以是：基本类型、也可以是对象类型。
   - 基本类型的数据：响应式依然是靠``Object.defineProperty()``的```get```与```set```完成的。
-  - 对象类型的数据：内部 <i style="color:gray;font-weight:bold">“ 求助 ”</i> 了Vue3.0中的一个新函数—— ```reactive```函数。
+  - 对象类型的数据：内部 <i style="color:gray;font-weight:bold">“ 求助 ”</i> 了Vue3.0中的一个新函数—— ```reactive```函数
+```vue
+<template>
+	<h1>一个人的信息</h1>
+	<h2>姓名：{{name}}</h2>
+	<h2>年龄：{{age}}</h2>
+	<h3>工作种类：{{job.type}}</h3>
+	<h3>工作薪水：{{job.salary}}</h3>
+	<button @click="changeInfo">修改人的信息</button>
+</template>
+
+<script>
+	import {ref} from 'vue'
+	export default {
+		name: 'App',
+		setup(){
+			//数据
+			let name = ref('张三') //加上ref之后数据就基本数据类型就变成了响应式
+			let age = ref(18)
+			let job = ref({
+				type:'前端工程师',
+				salary:'30K'
+			})
+
+			//方法
+			function changeInfo(){
+				// name.value = '李四'
+				// age.value = 48
+				console.log(job.value)
+				// job.value.type = 'UI设计师'
+				// job.value.salary = '60K'
+				// console.log(name,age)
+			}
+
+			//返回一个对象（常用）
+			return {
+				name,
+				age,
+				job,
+				changeInfo
+			}
+		}
+	}
+</script>
+```
 
 ## 3.reactive函数
 
-- 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（基本类型不要用它，要用```ref```函数）
+- 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（只能定义对象类型的相应数据，基本类型不要用它，要用```ref```函数）
+
 - 语法：```const 代理对象= reactive(源对象)```接收一个对象（或数组），返回一个<strong style="color:#DD5145">代理对象（Proxy的实例对象，简称proxy对象）</strong>
+
+  源对象就是心里想实现的对象，但是不能直接交给vue(因为直接定义的话数据就不是响应式的了)，代理对象就类似person`let person = reactive({})` 
+
 - reactive定义的响应式数据是“深层次的”。
-- 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作。
+
+- 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作(数据劫持)。
+
+```vue
+<template>
+	<h1>一个人的信息</h1>
+	<h2>姓名：{{person.name}}</h2>
+	<h2>年龄：{{person.age}}</h2>
+	<h3>工作种类：{{person.job.type}}</h3>
+	<h3>工作薪水：{{person.job.salary}}</h3>
+	<h3>爱好：{{person.hobby}}</h3>
+	<h3>测试的数据c：{{person.job.a.b.c}}</h3>
+	<button @click="changeInfo">修改人的信息</button>
+</template>
+
+<script>
+	import {reactive} from 'vue'
+	export default {
+		name: 'App',
+		setup(){
+			//数据
+			let person = reactive({ //person是代理对象，里面对象的各种属性和方法是源对象
+				name:'张三',
+				age:18,
+				job:{
+					type:'前端工程师',
+					salary:'30K',
+					a:{
+						b:{
+							c:666
+						}
+					}
+				},
+				hobby:['抽烟','喝酒','烫头']
+			})
+
+			//方法
+			function changeInfo(){
+				person.name = '李四'
+				person.age = 48
+				person.job.type = 'UI设计师'
+				person.job.salary = '60K'
+				person.job.a.b.c = 999
+				person.hobby[0] = '学习'
+			}
+
+			//返回一个对象（常用）
+			return {
+				person,
+				changeInfo
+			}
+		}
+	}
+</script>
+```
 
 ## 4.Vue3.0中的响应式原理
 
@@ -156,13 +295,37 @@ npm run dev
   - 新增属性、删除属性, 界面不会更新。
   - 直接通过下标修改数组, 界面不会自动更新。
 
+```js
+//模拟Vue2中实现响应式
+let p = {}
+Object.defineProperty(p,'name',{
+    configurable:true,
+    get(){ //有人读取name时调用
+        return person.name
+    },
+    set(value){ //有人修改name时调用
+        console.log('有人修改了name属性，我发现了，我要去更新界面！')
+        person.name = value
+    }
+})
+Object.defineProperty(p,'age',{
+    get(){ //有人读取age时调用
+        return person.age
+    },
+    set(value){ //有人修改age时调用
+        console.log('有人修改了age属性，我发现了，我要去更新界面！')
+        person.age = value
+    }
+}) 
+```
+
 ### Vue3.0的响应式
 
 - 实现原理: 
   - 通过Proxy（代理）:  拦截对象中任意属性的变化, 包括：属性值的读写、属性的添加、属性的删除等。
   - 通过Reflect（反射）:  对源对象的属性进行操作。
   - MDN文档中描述的Proxy与Reflect：
-    - Proxy：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+    - Proxy：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy（Proxy是Windows身上的内置对象）
     
     - Reflect：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect
     
@@ -183,6 +346,35 @@ npm run dev
       })
       
       proxy.name = 'tom'   
+      
+      
+      完整例子：
+      //源数据
+      let person = {
+          name:'张三',
+          age:18
+      }
+                  
+      const p = new Proxy(person,{
+          //有人读取p的某个属性时调用
+          get(target,propName){ //traget是在new Proxy时传入的对象(源数据),也就是person;propName是属性名
+              console.log(`有人读取了p身上的${propName}属性`) //例如person.name,propName则是name
+              return target[propName]
+              return Reflect.get(target,propName)
+          },
+          //有人修改p的某个属性、或给p追加某个属性时调用
+          set(target,propName,value){
+              console.log(`有人修改了p身上的${propName}属性，我要去更新界面了！`)
+              traget[propName] = value
+              Reflect.set(target,propName,value)
+          },
+          //有人删除p的某个属性时调用
+          deleteProperty(target,propName){ //target指的是从谁身上删除，propName是删除哪个属性
+              console.log(`有人删除了p身上的${propName}属性，我要去更新界面了！`)
+              delete target[propName]
+              return Reflect.deleteProperty(target,propName)
+          }
+      })
       ```
 
 ## 5.reactive对比ref
