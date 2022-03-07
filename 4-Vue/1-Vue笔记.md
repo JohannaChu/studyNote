@@ -451,7 +451,7 @@ const vm = new Vue({
 2. v-show
 	写法：v-show="表达式"
 	适用于：切换频率较高的场景。
-	特点：不展示的DOM元素未被移除，仅仅是使用样式隐藏掉
+	特点：不展示的DOM元素未被移除，仅仅是使用样式隐藏掉，实际上是调用CSS的display属性`display:none`
 
 3. 备注：使用v-if的时，元素可能无法获取到，而使用v-show则一定可以获取到，因为v-if是直接删除结点，而v-show只是隐藏内容而没有删除节点
 
@@ -683,7 +683,7 @@ new Vue({
 ## 3、自定义指令
 ### （1）语法范围
 1. 局部指令：
-		`new Vue({directives:{指令名:配置对象})` 或 `new Vie({directives{指令名:回调函数}})`
+		`new Vue({directives:{指令名:配置对象})` 或 `new Vue({directives{指令名:回调函数}})`
 2. 全局指令：
 			`Vue.directive(指令名,配置对象)` 或   `Vue.directive(指令名,回调函数)`
 ```vue
@@ -718,8 +718,9 @@ Vue.directive('fbind',{
 ![节点](./image/生命周期.png)
 总结：
 常用的生命周期钩子：
-1. mounted: 发送ajax请求、启动定时器、绑定自定义事件、订阅消息等【初始化操作】。
-2. beforeDestroy: 清除定时器、解绑自定义事件、取消订阅消息等【收尾工作】。
+
+1. `mounted`: 发送ajax请求、启动定时器、绑定自定义事件、订阅消息等【初始化操作】。
+2. `beforeDestroy`: 清除定时器、解绑自定义事件、取消订阅消息等【收尾工作】。
 
 关于销毁Vue实例
 1. 销毁后借助Vue开发者工具看不到任何信息。
@@ -739,16 +740,16 @@ Vue.directive('fbind',{
 3. 使用组件(写组件标签)
 
 #### （2）如何定义一个组件
-使用Vue.extend(options)创建，其中options和new Vue(options)时传入的那个options几乎一样，但也有点区别；
+使用`Vue.extend(options)`创建，其中options和new Vue(options)时传入的那个options几乎一样，但也有点区别；
 1. el不要写，为什么？ ——— 最终所有的组件都要经过一个vm的管理，由vm中的el决定服务哪个容器。
 2. data必须写成函数，为什么？ ———— 避免组件被复用时，数据存在引用关系。
 备注：使用template可以配置组件结构。
 
 #### （3）如何注册组件
-1. 局部注册：靠new Vue的时候传入components选项
-2. 全局注册：靠Vue.component('组件名',组件)
+1. 局部注册：靠`new Vue`的时候传入`components`选项
+2. 全局注册：靠`Vue.component('组件名',组件)`
 
-#### （4）编写组件标签：
+#### （4）使用组件—编写组件标签
 	<school></school>
 
 ### 2、注意点
@@ -770,20 +771,21 @@ Vue.directive('fbind',{
 备注：不用使用脚手架时，<school/>会导致后续组件不能渲染。
 
 一个简写方式：
-const school = Vue.extend(options) 可简写为：const school = options
+`const school = Vue.extend(options) `可简写为：`const school = options`
+
 ```
 const school = (){}
 ```
 
 ### 3、VueComponent
-1. school组件本质是一个名为VueComponent的构造函数，且不是程序员定义的，是Vue.extend生成的。
+1. school组件本质是一个名为`VueComponent`的构造函数，且不是程序员定义的，是`Vue.extend`生成的。
 
-```
-2. 我们只需要写<school/>或<school></school>，Vue解析时会帮我们创建school组件的实例对象
-即Vue帮我们执行的：new VueComponent(options)
-```
 
-3. 特别注意：每次调用Vue.extend，返回的都是一个**全新**的VueComponent
+2. 我们只需要写<school/>或<school></school>，Vue解析时会帮我们创建school组件的实例对象,即Vue帮我们执行的：
+
+   `new VueComponent(options)`
+
+3. 特别注意：每次调用`Vue.extend`，返回的都是一个**全新**的`VueComponent`
 
 4. 关于this指向：
 

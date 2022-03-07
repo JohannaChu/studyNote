@@ -87,6 +87,8 @@ vite官网：https://vitejs.cn
 
 <img src="https://cn.vitejs.dev/assets/bundler.37740380.png" style="width:500px;height:280px;float:left" /><img src="https://cn.vitejs.dev/assets/esm.3070012d.png" style="width:480px;height:280px" />
 
+
+
 ```bash
 ## 创建工程
 npm init vite-app <project-name>
@@ -96,6 +98,21 @@ cd <project-name>
 npm install
 ## 运行
 npm run dev
+```
+
+## 3、改变
+```vue
+在main.js里面不相同的地方：
+
+//引入放入不再是Vue构造函数，而是引入一个名为createApp的工厂函数
+import { createApp } from 'vue'
+import App from './App.vue'
+
+//创建应用实例对象-app(类似之前Vue2里面的vm,但是app比vm更“轻”-没有那么多属性和方法)
+const app = createApp(App)
+
+//挂载
+app.mount('#app')
 ```
 
 # 二、常用 Composition API
@@ -119,8 +136,8 @@ npm run dev
 
 ##  2.ref函数
 
-- 作用: 定义一个响应式的数据
-- 语法: ```const xxx = ref(initValue)``` 
+- 作用: 定义一个响应式的数据，实际上是RefImpl
+- 语法: ```const xxx = ref(initValue)``` --> const只能修改数组和对象的数据
   - 创建一个包含响应式数据的<strong style="color:#DD5145">引用对象（reference对象，简称ref对象）</strong>。
   - JS中操作数据： ```xxx.value```
   - 模板中读取数据: 不需要.value，直接：```<div>{{xxx}}</div>```
@@ -131,10 +148,15 @@ npm run dev
 
 ## 3.reactive函数
 
-- 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（基本类型不要用它，要用```ref```函数）
+- 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（只能定义对象类型的相应数据，基本类型不要用它，要用```ref```函数）
+
 - 语法：```const 代理对象= reactive(源对象)```接收一个对象（或数组），返回一个<strong style="color:#DD5145">代理对象（Proxy的实例对象，简称proxy对象）</strong>
+
+  源对象就是心里想实现的对象，但是不能直接交给vue(因为直接定义的话数据就不是响应式的了)，代理对象就类似person`let person = reactive({})` 
+
 - reactive定义的响应式数据是“深层次的”。
-- 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作。
+
+- 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作(数据劫持)。
 
 ## 4.Vue3.0中的响应式原理
 
@@ -162,7 +184,7 @@ npm run dev
   - 通过Proxy（代理）:  拦截对象中任意属性的变化, 包括：属性值的读写、属性的添加、属性的删除等。
   - 通过Reflect（反射）:  对源对象的属性进行操作。
   - MDN文档中描述的Proxy与Reflect：
-    - Proxy：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+    - Proxy：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy（Proxy是Windows身上的内置对象）
     
     - Reflect：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect
     
