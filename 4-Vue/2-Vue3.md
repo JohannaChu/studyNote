@@ -101,7 +101,7 @@ npm run dev
 ```
 
 ## 3、改变
-```vue
+```js
 在main.js里面不相同的地方：
 
 //引入放入不再是Vue构造函数，而是引入一个名为createApp的工厂函数
@@ -524,53 +524,53 @@ Object.defineProperty(p,'age',{
   //这里的newValue和oldValue是数组形式
   //例如结果：sum或msg变了 >(2) [1,"你好啊!"] >(2)[1,"你好啊"]
   //这里的深度监视虽然奏效但是没必要，因为他是基本数据类型没有多层次
-
-
-  /* 情况三：监视reactive定义的响应式数据-全部属性(监视一个对象的数据变化)
-  			若watch监视的是reactive定义的响应式数据，则无法正确获得oldValue！！
-  			若watch监视的是reactive定义的响应式数据，则强制开启了深度监视(深度监视就是多层嵌套之后仍然能够实现响应式)
-  */
-  watch(person,(newValue,oldValue)=>{
-  	console.log('person变化了',newValue,oldValue)
-  },{immediate:true,deep:false}) //此处的deep配置不再奏效
-
-  //情况四：监视reactive定义的响应式数据中的某个属性
-  //要把属性写成函数的形式，返回值是函数属性person.job
-  watch(()=>person.job,(newValue,oldValue)=>{
-  	console.log('person的job变化了',newValue,oldValue)
-  },{immediate:true,deep:true}) 
-
-  //情况五：监视reactive定义的响应式数据中的某些属性(情况三和四的结合)
-  watch([()=>person.job,()=>person.name],(newValue,oldValue)=>{
-  	console.log('person的job变化了',newValue,oldValue)
-  },{immediate:true,deep:true})
-
-  //特殊情况
-  watch(()=>person.job,(newValue,oldValue)=>{
-      console.log('person的job变化了',newValue,oldValue)
-  },{deep:true}) //此处由于监视的是reactive素定义的对象中的某个属性，所以deep配置有效
-
-  有两种方法监视用ref定义的对象的属性数据
-  let person = ref({
-    name:'张三'，
-    age:18,
-    job:{
-      salary:20
-    }
-  })
-  方法1：
-  watch(person.value,(newValue,oldValue)=>{
-        console.log('person的job变化了',newValue,oldValue)
-    }) //这里用的value实际上监视的不再是ref实例化的refImpl对象数据了，而是求助于reative定义的Proxy数据
-
-    方法2：
+  
+  //情况三：监视reactive定义的响应式数据-全部属性(监视一个对象的数据变化)
+    //若watch监视的是reactive定义的响应式数据，则无法正确获得oldValue！！
+    //若watch监视的是reactive定义的响应式数据，则强制开启了深度监视(深度监视就是多层嵌套之后仍然能够实现响应式)
     watch(person,(newValue,oldValue)=>{
+    	console.log('person变化了',newValue,oldValue)
+    },{immediate:true,deep:false}) //此处的deep配置不再奏效
+  
+   //情况四：监视reactive定义的响应式数据中的某个属性
+    //要把属性写成函数的形式，返回值是函数属性person.job
+    watch(()=>person.job,(newValue,oldValue)=>{
+    	console.log('person的job变化了',newValue,oldValue)
+    },{immediate:true,deep:true}) 
+  
+    //情况五：监视reactive定义的响应式数据中的某些属性(情况三和四的结合)
+    watch([()=>person.job,()=>person.name],(newValue,oldValue)=>{
+    	console.log('person的job变化了',newValue,oldValue)
+    },{immediate:true,deep:true})
+  
+    //特殊情况
+    watch(()=>person.job,(newValue,oldValue)=>{
         console.log('person的job变化了',newValue,oldValue)
-    },{immediate:true})
-    //这里实际上是使用深度监视把Proxy里面层层嵌套的东西读取出来
-  ```
+    },{deep:true}) //此处由于监视的是reactive素定义的对象中的某个属性，所以deep配置有效
+  
+  
+    有两种方法监视用ref定义的对象的属性数据
+    let person = ref({
+      name:'张三'，
+      age:18,
+      job:{
+        salary:20
+      }
+    })
+    
+    方法1：
+    watch(person.value,(newValue,oldValue)=>{
+          console.log('person的job变化了',newValue,oldValue)
+      }) //这里用的value实际上监视的不再是ref实例化的refImpl对象数据了，而是求助于reative定义的Proxy数据
+  
+  方法2：
+  watch(person,(newValue,oldValue)=>{
+      console.log('person的job变化了',newValue,oldValue)
+  },{immediate:true})
+  //这里实际上是使用深度监视把Proxy里面层层嵌套的东西读取出来
 
-### 3.watchEffect函数
+
+  ### 3.watchEffect函数
 
 - watch的套路是：既要指明监视的属性，也要指明监视的回调。
 
@@ -588,7 +588,7 @@ Object.defineProperty(p,'age',{
       const x2 = person.age
       console.log('watchEffect配置的回调执行了')
   })
-  ```
+
 
 ## 8.生命周期
 
@@ -758,7 +758,7 @@ Vue3中可以使用组合式API往setup里面写生命周期钩子，但是要�
 
 - readonly: 让一个响应式数据变为只读的（深只读）,数据无法修改，页面也不会变化
 - shallowReadonly：让一个响应式数据变为只读的（浅只读）。
-- 应用场景: 不希望数据被修改时，而且这个数据可能时别人传给你的（可以对ref和reactive的数据都进行只读操作）
+- 应用场景: 不希望数据被修改时，而且这个数据可能是别人传给你的（可以对ref和reactive的数据都进行只读操作）
 
 ## 3.toRaw 与 markRaw
 
@@ -841,7 +841,7 @@ Vue3中可以使用组合式API往setup里面写生命周期钩子，但是要�
      }
 
      完整例子：
-     	import { reactive,toRefs,provide } from 'vue'
+     import { reactive,toRefs,provide } from 'vue'
       import Child from './components/Child.vue'
       export default {
         name:'App',
@@ -863,9 +863,9 @@ Vue3中可以使用组合式API往setup里面写生命周期钩子，但是要�
          return {car}
      	......
      }
-
+     
      完整例子：
-     	import {inject} from 'vue'
+     import {inject} from 'vue'
       export default {
         name:'Son',
         setup(){
@@ -1009,18 +1009,19 @@ Vue3中可以使用组合式API往setup里面写生命周期钩子，但是要�
     </template>
 
 
-    //引入一个promise任务并且延时
-    		async setup(){
-			let sum = ref(0)
-			let p = new Promise((resolve,reject)=>{
-				setTimeout(()=>{
-					resolve({sum})
-				},3000)
-			})
-			return await p
-		}
+```js
+//引入一个promise任务并且延时
+		async setup(){
+		let sum = ref(0)
+		let p = new Promise((resolve,reject)=>{
+			setTimeout(()=>{
+				resolve({sum})
+			},3000)
+		})
+		return await p
 	}
-    ```
+}
+```
 
 # 六、其他
 
