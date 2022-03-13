@@ -43,7 +43,7 @@ JS式一种弱类型或者是动态语言，变量的数据类型是由JS引擎 
 &emsp; infinity代表无穷大，大于任何数值;-infinity代表无穷小，小于任何数值；NaN代表一个非数值
 &emsp; 可以用isNaN判断一个变量是否为非数字类型，如果是则返回false，如果不是则返回true
 
-```
+```js
 console.log(isNaN(undefined)); //true
 console.log(isNaN(12)) //false
 console.log(isNaN(null));  //false --> 可以转换为0

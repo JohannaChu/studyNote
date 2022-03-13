@@ -5,9 +5,33 @@
 ## 1、new操作符实现原理
 
 >`new`操作符通过执行自定义构造函数或者`js`内置构造函数，从而生成一个实例对象
+>- 创建一个空对象`let obj = new Object()`
 >
+>- 原型与原型链的关系(链接到原型) `obj.__proto__ = Person.prototype`
 >
+>- 绑定this指向，执行构造函数`let result = Person.call(obj)`
 >
+>- 确保返回的是一个对象(返回新对象) - 对构造函数有返回值的处理判断(基本类型忽略，引用类型输出)
+>
+>  ```js
+>  if(typeof(result) === "object"){
+>  	person1 = result //引用类型
+>  }else{
+>  	person1 = obj;  //值类型，原本的值类型
+>  }
+>  
+>  另外一种完整写法：
+>  function create(fn,...args){
+>      //1. 创建一个空的对象
+>      var obj = {};
+>      //2. 将空对象的原型指向构造函数的原型
+>      Object.setPrototypeOf(obj,fn.prototype)
+>      //3. 将空对象作为构造函数的上下文(改变this值)
+>      var result = fn.apply(obj,args)
+>      //4. 对构造函数有返回值的处理判断
+>      return result instanceof Object? result:obj
+>  }
+>  ```
 >
 
 # HTML类
@@ -78,6 +102,20 @@
 >
 >* 不是每个浏览器都支持这个新特性
 >
+
+
+# ES6
+## 1、var、let、const的区别
+>- var具有变量提升的机制；let和const没有变量提升的机制
+>- var可以重复赋值(多次声明同一个变量)；let和const不能多次声明同一个变量
+>- var和let一般声明变量；const一般声明数组和对象，不能对基本数据类型修改，只能修改数组和变量
+>- var声明的变量没有自身作用域；但是let和const声明的变量有自身的作用域(块级作用域)
+
+## 2、箭头函数和普通函数的区别
+>- this指向问题：箭头函数的this在箭头函数定义时就决定了，而且不可修改(call, apply, bind)；箭头函数的this指向定义时候、**外层第一个普通函数的this**
+>- 箭头函数不能new
+>- 箭头函数没有prototype
+>- 箭头函数没有arguments
 
 # VUE类
 
@@ -377,3 +415,16 @@ vue的渲染有两条线，一条是初始化更新，另一条是更新
 >- Action可以异步，而Mutation必须同步执行，因为Action可以和后端API结合，当vc传入的数据不确定需要访问服务器时，可以在Action执行
 >- Action不能修改数据，而Mutation专门用来修改State中的数据；因为vuex的数据是集中化管理的，只有Action通过commit了数据给Mutation后才能在Mutation进行数据的更改
 >- Action接收的参数是vc通过dispatch方法传递的动作类型和数据，实际上是context和value,context中存储着store的一些方法，主要是使用store中的commit；而Mutation接收的是State和传入的value
+>
+## 20、data和props的数据优先级
+>`props>methods>data>computed>watch`  从源码体现的
+>
+
+## 21、vuex相关面试题
+>### 21.1 vuex有哪些属性
+>
+>- State-类似于data
+>- getter-类似于组件中的computed（用来提前处理State中的数据）
+>- mutations-类似于组件中的methos
+>- actions-提交mutations
+>- modules -把以上4各属性再细分，让仓库更好管理
