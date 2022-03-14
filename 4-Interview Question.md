@@ -33,6 +33,55 @@
 >  }
 >  ```
 >
+## 2、深拷贝和浅拷贝
+>实现深拷贝和浅拷贝的api: https://juejin.cn/post/6844904197595332622#heading-1
+>
+>浅拷贝:
+>
+>- `Object.assign()`
+>
+>- 扩展运算符(原理其实也是`Object.assign()`)
+>
+>- `Array.prototype.concat()`
+>
+>- `Array.prototype.slice()`
+>
+>深拷贝:
+>
+>- `JSON.parse(JSON.stringify())`- 利用JSON.stringify将对象转成JSON字符串，再用JSON.parse把字符串解析成对象，一去一来，新的对象产生了，而且对象会开辟新的栈，实现深拷贝。**这种方法虽然可以实现数组或对象深拷贝,但不能处理函数和正则**，因为这两者基于JSON.stringify和JSON.parse处理后，得到的正则就不再是正则（变为空对象），得到的函数就不再是函数（变为null）
+>- 手写递归方法：**遍历对象、数组直到里边都是基本数据类型，然后再去复制，就是深度拷贝**（递归调用`deepClone`方法`cloneObj[key] = deepClone(obj[key], hash)`- 原理其实也是`JSON.parse(JSON.stringify()`）
+>
+## 3、见过哪些函数？他们的this指向
+>- 普通函数(this指向window)
+>
+>- 构造函数（this指向实例化的对象）
+>
+>- 回调函数（指向window，例如setTimeout）
+>
+>- 箭头函数(没有自己的this,指向自身作用域上一层的this)
+>
+>- 事件绑定函数（this 指向绑定事件）
+>
+> ```js
+> var but = document.querySelector("button");
+> but.onclick = function() {
+> 	console.log(this) //指向btn
+> }
+> ```
+>
+>- 匿名函数的this指向window(其实就是闭包)
+>- generator函数(this不生效，因为Generator函数会返回遍历器对象，而不是实例对象，因此无法获取到this指向的实例对象上的私有属性和方法。但是这个遍历器对象可以继承Generator函数的prototype原型对象上的属性和方法(公有属性和方法)。如果希望修复this指向性问题，可以使用call方法将函数执行时所在的作用域绑定到Generator.prototype原型对象上。这样做，会使私有属性和方法变成公有的了，因为都在原型对象上了) - https://www.cnblogs.com/unclekeith/p/8325465.html
+>
+## 4、迭代数组或对象的api
+>- for, while
+>- forEach(forEach无法遍历对象, forEach里面接收一个回调函数，function默认有三个参数: item, index, array)
+>- for in （可用于遍历数组和对象, 但它输出的只是数组的索引和对象的key, 我们可以通过索引和key取到对应的值）
+>- for of
+>- map: `array.map(callback[,thisArg])` map不改变原数组 `var arr = [1,2,3] var firearr = arr.map(current => current * 5)`
+>- filter - 不改变原数组
+>- `every`
+>- `somr`
+>- https://juejin.cn/post/6844903538175262734#heading-8
 
 # HTML类
 
@@ -112,7 +161,7 @@
 >- var声明的变量没有自身作用域；但是let和const声明的变量有自身的作用域(块级作用域)
 
 ## 2、箭头函数和普通函数的区别
->- this指向问题：箭头函数的this在箭头函数定义时就决定了，而且不可修改(call, apply, bind)；箭头函数的this指向定义时候、**外层第一个普通函数的this**
+>- this指向问题：箭头函数的this在箭头函数定义时就决定了，而且不可修改(call, apply, bind)；箭头函数不会创建自己的this， 所以它没有自己的this，它只会在自己作用域的上一层继承this（箭头函数的this指向定义时候、是**外层第一个普通函数的this**）
 >- 箭头函数不能new
 >- 箭头函数没有prototype
 >- 箭头函数没有arguments
@@ -315,10 +364,9 @@ vue的渲染有两条线，一条是初始化更新，另一条是更新
 
 ## 10、对$nextTick的理解
 >1. 语法：```this.$nextTick(回调函数)```
->
->2. 作用：`nextTick`指定的回调会在下一次 更新DOM 结束后再执行。
->
->3. 什么时候用：当改变数据后，要基于更新后的新DOM进行某些操作时，要在nextTick所指定的回调函数中执行。
+>2. 作用：`nextTick`指定的回调会在下一次 更新DOM 结束后再执行(获取更新后的dom，把异步的推到队列里面)
+>3. 什么时候用：当改变数据后，要基于更新后的新DOM进行某些操作时，要在nextTick所指定的回调函数中执行
+>3. 应用常将：当接收的数据是外部接口传入，可能计算不及时，需要更新dom后再同步(像异步操作)
 >
 
 ## 11、Vue 中给 data 中的对象属性添加一个新的属性时会发生什么？如何解决？
@@ -428,3 +476,26 @@ vue的渲染有两条线，一条是初始化更新，另一条是更新
 >- mutations-类似于组件中的methos
 >- actions-提交mutations
 >- modules -把以上4各属性再细分，让仓库更好管理
+>
+
+## diff算法原理
+
+>虚拟DOM是把DOM数据化了(也就是把DOM结构封装到一个对象里面)
+>
+>diff算法新老节点替换的规则
+>
+>- 如果新老节点不是同一个节点名称，那么就暴力删除旧的节点，创建插入新的节点
+>
+>- 只能同级比较，不能跨层比较，如果跨层就会暴力删除旧的节点，创建插入新的节点
+>
+>- ps: 如果要提升性能，一定要加入key，key是唯一标志，可以在更改前后确定是不是同一节点
+>
+>  ```js
+>  const vnode1 = h('h1',{},'你好');
+>  patch(container,vnode1); //用vnode1的覆盖原本的container
+>  
+>  const vnode2 = h('div',{},'你好');
+>  btn.onclick = function(){
+>  	patch(vnode1,vnode2); 	   
+>  }
+>  ```
