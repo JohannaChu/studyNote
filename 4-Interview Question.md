@@ -227,6 +227,32 @@
 >
 >缺点：每次需要手动刷新浏览器
 
+## 文件指纹
+>文件指纹是打包后输出的文件名的后缀。
+>
+>- `Hash`：和整个项目的构建相关，只要项目文件有修改，整个项目构建的 hash 值就会更改
+>- `Chunkhash`：和 Webpack 打包的 chunk 有关，不同的 entry 会生出不同的 chunkhash
+>- `Contenthash`：根据文件内容来定义 hash，文件内容不变，则 contenthash 不变
+>
+
+## 如何保证各个loader按照预想方式工作
+>可以使用 `enforce` 强制执行 `loader` 的作用顺序，`pre` 代表在所有正常 loader 之前执行，`post` 是所有 loader 之后执行
+>
+## 代码分割
+>
+
+## Babel原理
+>**解析**：将代码转换成 AST
+>
+>- 词法分析：将代码(字符串)分割为token流，即语法单元成的数组
+>- 语法分析：分析token流(上面生成的数组)并生成 AST
+>
+>**转换**：访问 AST 的节点进行变换操作生产新的 AST
+>
+>- [Taro](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2FNervJS%2Ftaro%2Fblob%2Fmaster%2Fpackages%2Ftaro-transformer-wx%2Fsrc%2Findex.ts%23L15)就是利用 babel 完成的小程序语法转换
+>
+>*生成：以新的 AST 为基础生成代码
+
 
 # VUE类
 
