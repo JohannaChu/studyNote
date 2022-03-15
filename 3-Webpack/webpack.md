@@ -5,7 +5,7 @@
 # 一、介绍
 ## 1、简介
 ### （1）具体做法
-将indexjs(或其中文件)中的JQ/less文件打包成chunk(代码块)
+将index.js(或其中文件)中的JQuery/less文件打包成chunk(代码块)
 将chunk分别编译(css编译成less,js编译成jquery等)，打包作为bundle输出
 
 ### （2）模式mode
@@ -31,6 +31,7 @@ less需要配置style-loader,css-loader,less-loader
 plugins会默认创建一个空的HTML，自动引入打包输出的所有资源(JS/CSS)
 写的时候需要结构，需要不是空的HTML，因此写的时候要一个template，复制一个HTML
 它其实算是一个构造函数，引入后需要new一下HtmlWebpackPlugin
+HtmlWebpackPlugin：作用是简化 HTML 文件创建 (依赖于 html-loader)
 
 ### （3）引入图片资源
 使用url-loader
@@ -47,9 +48,9 @@ exclude:/\.(css|js|html|less)$/
 
 ### （5）基本配置：
 
-```
+```json
 const { resolve } = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //引入HTML plugin
 
 module.exports = {
     entry: './src/index.js',
@@ -77,7 +78,7 @@ mode: 'development'  //环境配置
 特点：只会在内存中编译，而不会有任何输出(终端运行指令：npx webpack-dev-server)
 如果使用webpack这个指令则会将打包结果输出
 
-```
+```js
 devServer: {
     contentBase:resolve(__dirname,'build'), 
     //项目构建后的路径：绝对路径并且确定输出路径
@@ -88,7 +89,7 @@ devServer: {
 
 ### （7）综合配置：
 
-```
+```js
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -198,11 +199,14 @@ html压缩：不需要对html处理兼容性，因为没有兼容性问题
 
 ### （8）总结：生产环境配置
 
-```
+```js
 const { resolve } = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin'); //CSS压缩
-const HtmlWebpackPlugin = require('html-webpack-plugin);  
+//引入plugin 提取CSS成单独文件，不用原本的style-loader,把css从js里面提取出来
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); 
+ //CSS压缩
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+//引入html plugin
+const HtmlWebpackPlugin = require('html-webpack-plugin);   
 
 // 定义 nodejs 环境变量：决定使用 browserslist 的哪个环境(css兼容性)
 process.env.NODE_ENV = 'production'
@@ -214,7 +218,7 @@ const commonCssLoader = [
     //use数组的执行顺序是从下往上的，也就是说先执行less-loader将less转为css,然后做css的兼容性处理，最后通过css-loader将css加载到js中，再通过MiniCss提取成单独文件
 
     {
-    // 还需要在 package.json 中定义 browserslist
+    // 还需要在 package.json 中定义 browserslist,处理CSS兼容性处理
         loader: 'postcss-loader',
         options: {
             ident: 'postcss',
@@ -233,7 +237,7 @@ module.exports = {
         rules: [
             {   //处理css文件并提取为单独文件
                 test:/\.css$/
-                use: [...commonCssLoader]
+                use: [...commonCssLoader] //不再使用css-loader和style-loader
             },
 
             {   //处理less文件并提取为单独文件
@@ -358,24 +362,25 @@ HTML文件：默认不能使用HMR功能，同时会导致问题：HTML文件不
 
 [inline-|hidden-|eval-][nosources-][cheap-[module]]source-map 可以组合
 
-1. source-map:外部(提供错误代码准确信息和源代码的错误位置)
-2. inline-source-map:内联(只生成一个内联source-map,提供错误代码准确信息和源代码的错误位置)
-3. hidden-source-map:外部(错误代码错误原因，但没有错误位置,不能追踪源代码错误，只能提示到构建后代码的错误位置)
-4. eval-source-map:内联(每个文件都生成对应的source-map,都在eval，提供错误代码准确信息和源代码的错误位置)
-5. nosources-source-map:外部(提供错误代码准确信息，但没有任何源代码信息)
-6. cheap-source-map:外部(错误代码准确信息和源代码错误位置，但只能精确到行不能到列)
-7. cheap-module-source-map:外部(错误代码准确信息和源代码错误位置)
+- source-map:外部(提供错误代码准确信息和源代码的错误位置)
+- inline-source-map:内联(只生成一个内联source-map,提供错误代码准确信息和源代码的错误位置)
+- hidden-source-map:外部(错误代码错误原因，但没有错误位置,不能追踪源代码错误，只能提示到构建后代码的错误位置)
+- eval-source-map:内联(每个文件都生成对应的source-map,都在eval，提供错误代码准确信息和源代码的错误位置)
+- nosources-source-map:外部(提供错误代码准确信息，但没有任何源代码信息)
+- cheap-source-map:外部(错误代码准确信息和源代码错误位置，但只能精确到行不能到列)
+- cheap-module-source-map:外部(错误代码准确信息和源代码错误位置)
 
 内联和外部的区别：
-1. 外部生成了文件，内联没有
-2. 内联构建速度更快
+
+- 外部生成了文件，内联没有
+- 内联构建速度更快
 
 开发环境：速度快，调试更友好
-1. 速度快(eval>inline>cheap>...)
-可以使用eval-cheap-source-map或者eval-source-map
 
-2. 调试更友好
-可以使用source-map或者cheap-module-source-map或者cheap-source-map
+- 速度快(eval>inline>cheap>...)
+  可以使用eval-cheap-source-map或者eval-source-map
+- 调试更友好
+  可以使用source-map或者cheap-module-source-map或者cheap-source-map
 
 综合：开发环境可以使用eval-source-map或者eval-cheap-module-source-map
 
@@ -433,7 +438,7 @@ Prefetch预加载：会在使用之前就提前加载js文件，但是有兼容�
 预加载是等其他资源加载完毕，等浏览器空闲再偷偷加载资源
 
 例如：
-```
+```js
 document.getElementById('btn').onclick = function() {
     //懒加载
     import(/*webpackChunkName: 'test',webpackPrefetch:true */'./test').then(({mul})) => { 
@@ -446,7 +451,7 @@ document.getElementById('btn').onclick = function() {
 PWA: 渐进式网络开发应用程序(离线可访问)
 使用workbox包 --> workbox-webpack-plugin
 
-```
+```js
 new WorkboxpackPlugin.GenrateSW({
     //帮助serviceworker快速启动以及删除旧的serviceworker
 
@@ -497,7 +502,7 @@ externals和dll都是不打包某个库，但是external是直接不打包，需
 
 ## 2、output
 
-```
+```js
 output: {
     //文件名称(指定名称+目录)
     filename: 'js/[name].js',
@@ -517,7 +522,7 @@ output: {
 
 ## 3、module
 
-```
+```js
 module: {
     rules: [
     // loader 的配置
@@ -548,7 +553,7 @@ module: {
 
 ## 4、resolve
 
-```
+```js
 // 解析模块的规则
 resolve: {
     // 配置解析模块路径别名: 优点简写路径 缺点路径没有提示
@@ -564,7 +569,7 @@ resolve: {
 
 ## 5、devServer
 
-```
+```js
 devServer: {
     // 运行代码的目录
     contentBase: resolve(__dirname, 'build'),
@@ -608,7 +613,7 @@ devServer: {
 ## 6、optimization
 当a文件引入b文件，一旦b文件的hash值改变，a文件也会改变，runtimeChunk就是把hash值单独打包为一个chunk;即使b文件改变，也是hash-chunk改变，a文件不会变
 
-```
+```js
 optimization: { //缓存默认存在问题，加上runtimeChunk可以解决问题
     splitChunks: {
         chunks: 'all'  //默认值，可以不写~

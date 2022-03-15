@@ -1,4 +1,73 @@
+# HTML类
 
+## 1、web worker
+
+>### 1.1、web worker是什么？
+>
+>在 HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可相应。web worker 是运行在后台的` js`，独立于其他脚本，不会影响页面的性能。 并且通过 `postMessage` 将结果回传到主线程。这样在进行复杂操作的时候，就不会阻塞主线程了。
+
+>### 1.2、web worker的使用
+>
+>* Web worker是HTML5提供的一个JavaScript多线程解决方案，可以将一些大计算量的代码交由给运行而不冻结用户界面
+>* 但是子线程完全受主线程控制，且不得操作DOM，因此这个新标准并没有改变JavaScript单线程的本质
+>* 使用：（1）创建在分线程执行的`js`文件  （2）在主线程中的`js`中发消息并设置回调
+>
+>```html
+>//主线程
+><input type="text" placeholder="数值" id="number">
+><button id="btn">计算</button>
+><script type="text/javascript">
+>
+>var input = document.getElementById('number')
+>document.getElementById('btn').onclick = function(){
+>    var number = input.value
+>
+>    //创建一个worker对象
+>    var worker = new Worker('worker.js')
+>    //绑定接收消息的监听
+>    worker.onmessage = function(event){
+>        console.log('主线程接收分线程返回的数据：' + event.data)
+>        alert(event.data)
+>    }
+>}
+>
+>worker.postMessage(number)
+>console.log('主线程向分线程发送消息' + event.number)
+>
+></script>
+>```
+>
+>```js
+>//分线程
+>function fibonacci(n) {
+>  return n<=2? 1:fibonacci(n-1) + fibonacci(n-2)
+>}
+>
+>var onmessage = function (event) {
+>  var number = event.data
+>  console.log('分线程接收到主线程发送的数据' + number)
+>  //计算
+>  var result = fibonacci(number)
+>  postMessage(result)
+>  console.log('分线程向主线程返回数据' + result)
+>}
+>```
+>
+>
+>### 1.3、相关API
+>
+>* `Worker`: 构造函数, 加载分线程执行的`js`文件
+>* `Worker.prototype.onmessage`: 用于接收另一个线程的回调函数
+>* `Worker.prototype.postMessage`: 向另一个线程发送消息
+>
+>
+>### 1.4、不足
+>
+>* `worker`内代码不能操作DOM(更新UI), 因为这里的this不是window下
+>
+>* 不能跨域加载JS
+>
+>* 不是每个浏览器都支持这个新特性
 
 # JavaScript类
 
@@ -83,75 +152,6 @@
 >- `somr`
 >- https://juejin.cn/post/6844903538175262734#heading-8
 
-# HTML类
-
-## 1、web worker
->### 1.1、web worker是什么？
->在 HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可相应。web worker 是运行在后台的` js`，独立于其他脚本，不会影响页面的性能。 并且通过 `postMessage` 将结果回传到主线程。这样在进行复杂操作的时候，就不会阻塞主线程了。
->
-
->### 1.2、web worker的使用
->* Web worker是HTML5提供的一个JavaScript多线程解决方案，可以将一些大计算量的代码交由给运行而不冻结用户界面
->* 但是子线程完全受主线程控制，且不得操作DOM，因此这个新标准并没有改变JavaScript单线程的本质
->* 使用：（1）创建在分线程执行的`js`文件  （2）在主线程中的`js`中发消息并设置回调
->
->```html
->//主线程
-><input type="text" placeholder="数值" id="number">
-><button id="btn">计算</button>
-><script type="text/javascript">
->
-> var input = document.getElementById('number')
-> document.getElementById('btn').onclick = function(){
->     var number = input.value
->
->     //创建一个worker对象
->     var worker = new Worker('worker.js')
->     //绑定接收消息的监听
->     worker.onmessage = function(event){
->         console.log('主线程接收分线程返回的数据：' + event.data)
->         alert(event.data)
->     }
-> }
->
-> worker.postMessage(number)
-> console.log('主线程向分线程发送消息' + event.number)
->
-></script>
->```
->
->```js
->//分线程
->function fibonacci(n) {
->   return n<=2? 1:fibonacci(n-1) + fibonacci(n-2)
->}
->
->var onmessage = function (event) {
->   var number = event.data
->   console.log('分线程接收到主线程发送的数据' + number)
->   //计算
->   var result = fibonacci(number)
->   postMessage(result)
->   console.log('分线程向主线程返回数据' + result)
->}
->```
->
->
->### 1.3、相关API
->
->* `Worker`: 构造函数, 加载分线程执行的`js`文件
->* `Worker.prototype.onmessage`: 用于接收另一个线程的回调函数
->* `Worker.prototype.postMessage`: 向另一个线程发送消息
->
->
->### 1.4、不足
->* `worker`内代码不能操作DOM(更新UI), 因为这里的this不是window下
->
->* 不能跨域加载JS
->
->* 不是每个浏览器都支持这个新特性
->
-
 
 # ES6
 ## 1、var、let、const的区别
@@ -165,6 +165,9 @@
 >- 箭头函数不能new
 >- 箭头函数没有prototype
 >- 箭头函数没有arguments
+>
+
+# Webpack
 
 # VUE类
 
