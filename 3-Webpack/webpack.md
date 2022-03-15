@@ -1,4 +1,4 @@
-# #目录
+# 目录
 
 >[TOC]
 
@@ -16,6 +16,8 @@
 webpack能够处理js/json资源，不能处理css/img等其他资源
 生产环境和开发环境将ES6模块化编译成浏览器能识别的模块化
 生产环境比开发环境多一个压缩js代码
+
+webpack 默认支持处理 JS 与 JSON 文件，其他类型都处理不了，必须借助 Loader 来对不同类型的文件的进行处理
 
 ## 2、打包-开发环境打包
 主要对css,html，图片资源以及其他资源做处理
@@ -74,7 +76,7 @@ mode: 'development'  //环境配置
 ```
 
 ### （6）devServer
-用来自动化：自动编译，自动打开浏览器，自动刷新浏览器(自动编译，自动运行，自动打包)
+用来自动化：自动编译，自动打开浏览器，自动刷新浏览器(自动编译，自动运行，自动打包) - DevServer用于提供HTTP服务、监听文件变化并实时刷新页面、支持SourceMap以方便调试
 特点：只会在内存中编译，而不会有任何输出(终端运行指令：npx webpack-dev-server)
 如果使用webpack这个指令则会将打包结果输出
 
@@ -94,16 +96,16 @@ const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.js', //打包入口地址
     output: {
-        filename: 'built.js',
-        path: resolve(__dirname, 'build')
+        filename: 'built.js', //输出文件名
+        path: resolve(__dirname, 'build') //输出文件目录
 },
 module: {  //配置loader
-    rules: [
+    rules: [ //转换规则
     {   //配置引入样式资源，由于是css只需引入两个即可
-        test: /\.css$/,  
-        use: ['style-loader', 'css-loader']  //多项引入
+        test: /\.css$/,  //匹配所有的css文件
+        use: ['style-loader', 'css-loader']  //多项引入（use:对应的Loader名称）
     },
     {
         //处理less资源
@@ -766,3 +768,10 @@ cache: {
 - `entry: "./src/index.js`
 - `output.path: path.resolve(__dirname, "dist")`
 - `output.filename: "[name].js"`
+
+# 五、总结
+
+## 1、loader和plugin的区别
+
+>Loader 就是将 Webpack 不认识的内容转化为认识的内容(转换特定类型的文件)
+>Plugin可以贯穿 Webpack 打包的生命周期，执行不同的任务

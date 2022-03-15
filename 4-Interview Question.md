@@ -122,25 +122,20 @@
 >
 ## 3、见过哪些函数？他们的this指向
 >- 普通函数(this指向window)
->
 >- 构造函数（this指向实例化的对象）
->
 >- 回调函数（指向window，例如setTimeout）
->
 >- 箭头函数(没有自己的this,指向自身作用域上一层的this)
->
+>- 匿名函数的this指向window(其实就是闭包)
 >- 事件绑定函数（this 指向绑定事件）
 >
-> ```js
-> var but = document.querySelector("button");
-> but.onclick = function() {
+>```js
+>var but = document.querySelector("button");
+>but.onclick = function() {
 > 	console.log(this) //指向btn
 > }
 > ```
->
->- 匿名函数的this指向window(其实就是闭包)
->- generator函数(this不生效，因为Generator函数会返回遍历器对象，而不是实例对象，因此无法获取到this指向的实例对象上的私有属性和方法。但是这个遍历器对象可以继承Generator函数的prototype原型对象上的属性和方法(公有属性和方法)。如果希望修复this指向性问题，可以使用call方法将函数执行时所在的作用域绑定到Generator.prototype原型对象上。这样做，会使私有属性和方法变成公有的了，因为都在原型对象上了) - https://www.cnblogs.com/unclekeith/p/8325465.html
->
+> 
+> - generator函数(this不生效，因为Generator函数会返回遍历器对象，而不是实例对象，因此无法获取到this指向的实例对象上的私有属性和方法。但是这个遍历器对象可以继承Generator函数的prototype原型对象上的属性和方法(公有属性和方法)。如果希望修复this指向性问题，可以使用call方法将函数执行时所在的作用域绑定到Generator.prototype原型对象上。这样做，会使私有属性和方法变成公有的了，因为都在原型对象上了) - https://www.cnblogs.com/unclekeith/p/8325465.html
 ## 4、迭代数组或对象的api
 >- for, while
 >- forEach(forEach无法遍历对象, forEach里面接收一个回调函数，function默认有三个参数: item, index, array)
@@ -168,6 +163,70 @@
 >
 
 # Webpack
+## Webpack的作用
+>- **模块打包**：可以将不同模块的文件打包整合在一起，并且保证它们之间的引用正确，执行有序。利用打包我们就可以在开发的时候根据我们自己的业务自由划分文件模块，保证项目结构的清晰和可读性。
+>- **编译兼容**：可以通过`webpack`的`Loader`机制，帮助我们对代码做`polyfill`，还可以编译转换诸如`.less, .vue, .jsx`这类在浏览器无法识别的格式文件，让我们在开发的时候可以使用新特性和新语法做开发，提高开发效率
+>- **能力扩展**：通过`webpack`的`Plugin`机制，我们在实现模块化打包和编译兼容的基础上，可以进一步实现诸如按需加载，代码压缩等一系列功能，帮助我们进一步提高自动化程度，工程效率以及打包输出的质量
+## 常用的loader
+>- `css-loader`：加载 CSS，支持模块化、压缩、文件导入等特性
+>- `less-loader`：将less转换成CSS
+>- `style-loader`：将处理好的 css 通过 style 标签的形式添加到页面（原理：动态添加 style 标签的方式，将样式引入页面）
+>
+>```js
+>const content = `${样式内容}`
+>const style = document.createElement('style'); //也相当于style.innerHTML = content;
+>```
+>- `babel-loader`：把 ES6 转换成 ES5
+>- `eslint-loader`：通过 ESLint 检查 JavaScript 代码
+>- 图片处理loader：
+>   - `file-loader`：把图片输出到一个文件夹中，在代码中通过相对 URL 去引用输出的文件 
+>   - `url-loader`：与 file-loader 类似，区别是用户可以设置一个阈值，大于阈值会交给 file-loader 处理，小于阈值时返回文件 base64 形式编码 (处理图片和字体)
+>   - `image-loader`：加载并且压缩图片文件
+## 常用的Plugin
+>- `html-webpack-plugin`：自动引入打包输出的所有资源(JS/CSS)
+>- ` clean-webpack-plugin`：自动清空打包目录（每次打包的时候，打包目录都会遗留上次打包的文件，为了保持打包目录的纯净，需要在打包前将打包目录清空）
+>- `mini-css-extract-plugin`：将CSS的样式从JS中分离出来，类似以前的style-loader
+>- `purgecss-webpack-plugin`:会单独提取 CSS 并清除用不到的 CSS
+>- `optimize-css-assets-webpack-plugin`：压缩CSS
+
+## Loader和Plugin的区别
+>区别1：
+>
+>- `Loader` 本质是一个函数，在这个函数中对接收到的内容进行转换，返回转换后的结果。 相当于将Webpack不认识的内容转化为认识的内容
+>
+>- `Plugin` 可以扩展 Webpack 的功能，贯穿 Webpack 打包的生命周期，执行不同的任务（在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果）
+>
+>区别2：
+>- `Loader` 在 module.rules 中配置，它的类型为数组。每一项都是一个 Object对象，内部包含了 test(类型文件)、loader、options (参数)等属性
+>- `Plugin` 在 plugins 中单独配置，类型为数组，每一项是一个 Plugin 的实例，参数都通过构造函数传入
+>
+## Webpack构建流程简单说一下
+>- **初始化**：读取与合并配置参数，加载 Plugin
+>- **编译**：从 Entry 出发，针对每个 Module 调用对应的 Loader 去翻译文件的内容，再找到该 Module 依赖的 Module，递归地进行编译处理
+>- **输出**：将编译后的 Module 组合成 Chunk，将 Chunk 转换成文件，输出到文件系统中
+
+## source map是什么
+>`source map` 是将构建打后的代码（编译、打包、压缩）映射回源代码的过程。打包压缩后的代码不具备良好的可读性，想要调试源码就需要 soucre map
+>
+>生产环境可以使用`source-map`或者`cheap-module-source-map`
+>开发环境可以使用`eval-source-map`或者`eval-cheap-module-source-map`
+>
+## 热更新原理
+>也叫`HMR` -  可以做到不用刷新浏览器而将新变更的模块替换掉旧的模块
+>
+>原理：建立起浏览器端和服务器端之间的通信，浏览器会接收服务器端推送的消息，如果需要热更新，浏览器发起http请求去服务器端获取打包好的资源解析并局部刷新页面
+## 文件监听原理
+>作用：发现源码发生变化时，自动重新构建出新的输出文件
+>
+>原理：轮询判断文件的最后编辑时间是否变化，如果某个文件发生了变化，并不会立刻告诉监听者，而是先缓存起来，等 `aggregateTimeout` 后再执行。
+>
+>Webpack开启监听模式，有两种方式：
+>
+>- 启动 webpack 命令时，带上 --watch 参数
+>- 在配置 webpack.config.js 中设置 watch:true
+>
+>缺点：每次需要手动刷新浏览器
+
 
 # VUE类
 
