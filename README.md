@@ -10,6 +10,11 @@ My web development tutorials, including CSS、BOM、DOM、ES6、JavaScript、Web
 - ES6(包括Symbol、异步函数Promise、模块化方法、async和await等)
 - JavaScript高级(包括原型与原型链、执行上下文与执行上下文栈、作用域与作用域链、闭包等) --> 推荐
     
-3、webpack和vue中的笔记以markdown形式分别存储在对应文件夹内
+3、webpack以markdown形式存储在文件夹中，包括webpack4和webpack5的相关知识 --> 推荐
 
-4、常见面试题目的笔记以markdown形式存储在4-Interview Question中
+4、vue以markdown的形式存储在对应文件夹，内有vue2和vue3的相关知识，其中vue2分两个.md文件描述 --> 推荐
+- 1-vue(包括vue的最基本知识，如数据绑定、MVVM模型、事件代理、渲染、指令、生命周期、组件等)
+- 1.2 Vue2(包括脚手架的配置、组件间的消息传递、vuex、路由等)
+- 2- Vue3(包括各种Composition API和各种新的组件介绍)
+
+5、常见面试题目的总结笔记以markdown形式存储在4-Interview Question中，包括HTML,CSS,JavaScript,webpack,vue
