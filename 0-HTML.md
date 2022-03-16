@@ -1,0 +1,131 @@
+# 基本表单特性
+
+>- required：必填字段
+>- action：与后台的数据交互
+>- autofoucs：浏览器刷新自动聚焦/`autofocus="autofocus"`
+>- novalidate：不验证表单内容（即使内容为空也是直接提交表单内容）- 写在form上
+>- pattern：匹配正则表达式，如果不符合则拒接提交
+>- autocomplete：保存以往表单输入的历史记录`autocomplete="on"`
+>- label：label中有一个for属性，是为了绑定表单中的某个元素与之对应，for与id相对应
+>
+
+# 约束验证api
+## validaity
+
+> ```html
+> <form action="">
+>     <input type="text" id="username">
+>     <input type="submit">
+> </form>
+> 
+> <script>
+>     console.log(username.validaity) //输出的实际上时ValidityState的各种属性
+> </script>
+> ```
+>
+> - valueMissong：和required属性相对应，当有required属性时，valueMissing为true
+> - tooLong&tooShort：和input表单里的maxlength和minlength相对应，当最大和最小长度设定时，tooLong&tooShort为false
+> - patternMismatch：和表单的pattern属性相对应，当验证不通过时为true
+> - typeMismatch：不符合input的某种类型，例如email,url,tel等为true`<input type="email" value="ssfw">`为true
+> - rangeOverflow&rangeOverflow：对应input的max最大值和min最小值
+> 
+
+## checkValidity
+>如果表单元素内的任一要求没有它的约束条件，返回false，其余情况则返回true
+>
+## setCostomValidity
+>设置自定义验证信息，用于即将实施与验证的约束来覆盖预定义的信息（实际上就是修改当不符合要求的提示内容）
+>
+>综合例子：
+>
+>```js
+>function checkit(obj){
+>    var it = onj.validity;
+>    if(true === it.valueMissing){
+>        obj.setCustomValidity("不能为空")
+>    }else{
+>        if(true === it.patternMismatch){
+>            obj.setCustomValidity("不符合正则匹配")
+>    }else{
+>        obj.CustomValidity("")
+>    }
+>}
+>```
+
+# form表单的提交方式
+>**1. 普通提交**： form 表单通过action 的属性来提交给后台，并通过method确定提交给后台的请求方式
+>
+>```html
+><form action="[http://localhost:8080/user]" method="post">
+>    
+><!-- form 表单post提交，默认会刷新到 action 页面 -->
+>    <form action="http://localhost:3008/user" method="POST" name="post提交">
+>      <p>name: <input type="text" name="username"></p>
+>      <p>password: <input type="password" name="password"></p>
+>      <input type="submit" value="提交">
+>    </form>
+>    
+><!-- form 表单get 提交, 默认刷新action 页面 -->
+>    <form action="http://localhost:3008/user" method="GET" name="get提交">
+>      <p>name: <input type="text" name="username"></p>
+>      <p>password: <input type="password" name="password"></p>
+>      <input type="submit" value="提交">
+>    </form>
+>```
+>
+>- form 的提交行为需要通过type=submit实现
+>- form 中的method 属性不指定时， form 默认的提交方式为 get请求
+>- form 表单的提交后会有默认行为，会跳转刷新到action 的页面
+>
+>**2. 阻止跳转**：form 表单的提交会伴随着跳转到action中指定 的url 链接，为了阻止这一行为，可以通过设置一个隐藏的iframe 页面，并将form 的target 属性指向这个iframe，当前页面iframe则不会刷新页面
+>
+>```html
+><!-- 无刷新页面提交 -->
+>    <form action="http://localhost:3008/user" method="POST" name="post提交" target="targetIfr">
+>      <p>name: <input type="text" name="username"></p>
+>      <p>password: <input type="password" name="password"></p>
+>      <input type="submit" value="提交">
+>    </form>
+>    <iframe name="targetIfr" style="display:none"></iframe>
+>```
+>
+>**3. 脚本触发form 表单的提交行为**：js事件触发表单提交，通过button、链接等触发事件，js调用submit()方法提交表单数据
+>
+>- 通过脚本提交行为依然存在跳转，新页面刷新的问题
+>- 脚本中可以通过阻止默认行为来禁止页面跳转
+>
+>**4. 通过ajax 提交请求**：
+>
+>```html
+><!-- ajax 请求 -->
+>    <form method="POST">
+>      <p>name: <input type="text" name="username"></p>
+>      <p>password: <input type="password" name="password"></p>
+>      <div id="jqbtn">提交</div>
+>    </form>
+>
+>ajax代码：
+> $('#jqbtn').click(function () {
+>      $.ajax({
+>        url: 'http://localhost:3008/user',
+>        type: 'POST',
+>        data: JSON.stringify(params),
+>        contentType: "application/json", // 默认以formdata形式发送给后台
+>        dataType: "json",
+>        success: function (res) {
+>          console.log(res)
+>        }
+>      })
+>    })
+>```
+>
+>- 通过ajax 请求模拟form 的提交需要注意 form 表单内 不允许 `<button type="submit"></button>`的存在，否则会和ajax 自身的请求相冲突
+>- ajax 请求需要处理跨域问题，而form 表单的默认提交不需要，原因是原页面用form 提交到另一个域名之后，原脚本无法获取响应的内容，所以浏览器认为这是安全的，而ajax 需要处理响应的内容，浏览器则认为这是一种跨域的行为
+>
+
+# 常见面试题
+## input和textarea的区别
+
+> 
+
+## 用一个div模拟textarea的实现

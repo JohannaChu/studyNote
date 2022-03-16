@@ -599,3 +599,29 @@ vue的渲染有两条线，一条是初始化更新，另一条是更新
 >  	patch(vnode1,vnode2); 	   
 >  }
 >  ```
+
+# GitHub
+## 解决冲突
+>一般是因为两个人同时修改了一个文件test01.html,其中一个人先push上去，另外一人push的时候会出现冲突
+>
+>- 先git pull 将远程仓库的代码拉取下来
+>- 然后执行git pull 提示CONFLICT ，文件冲突，
+>- 执行git diff查看冲突文件（其中HEAD 和 ===之间的内容为自己修改的内容，=====之后为别人修改的内容）
+>- 沟通确定谁的更改需要保存，然后手动删除或修改后保存文件
+>- 再执行git add， git commit -m "message"将文件添加到本地仓库，再执行git push 推送到远程仓库
+>
+>还有可能是两个人修改了不同的文件，一个人push上去后，另外一个人push也会出现冲突，因为当远程仓库比本地仓库forward的时候，这个时候进行push都会提示报错，此时需要先pull，然后再push；由于修改的是不同的文件，其实不存在冲突的问题，存在的是本地仓库和远程仓库不同步的问题
+>
+>- git push 提示 错误 remote contains work that you co not have . 远端仓库比本地仓库文件多，提示需要git pull
+>-  git pull 执行完成 
+>- git diff 查看冲突，发现没有冲突文件
+>- git status 查看状态
+>- 直接git push 将代码推送到远端仓库
+
+## 提交错分支
+
+> - git log显示出当前分支上的所有commit
+> - 复制最近一次正确commit的ID
+> - git reset commitID（回退到提交前的某一个版本号，并将之前提交的东西放回未暂存区域；reset之后，已提交的文件会回到未暂存里面来）
+> - git checkout 本应提交的那个分支名称：切换分支
+> - git commit 在当前这个正确的分支上提交刚刚那些走错门的commit
