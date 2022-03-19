@@ -18,3 +18,7 @@ My web development tutorials, including HTML、CSS、BOM、DOM、ES6、JavaScrip
 - 1-vue(包括vue的最基本知识，如数据绑定、MVVM模型、事件代理、渲染、指令、生命周期、组件等)
 - 1.2 Vue2(包括脚手架的配置、组件间的消息传递、vuex、路由等)
 - 2- Vue3(包括各种Composition API和各种新的组件介绍)
+
+5、计算机原理和网络概述与HTTP协议的相关知识主要包含在对应文件夹
+- 1-计算机网络概述(包括计算机网络结构、网络应用、各层网络模型的具体解释和网络安全等)
+- 2-HTTP(包括HTTP概念和工作流程，以及常见的HTTP问题)
