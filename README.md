@@ -1,5 +1,7 @@
 # 欢迎来到 JohannaChu 的 前端 快速入门代码仓库
-My web development tutorials, including CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
+My web development tutorials, including HTML、CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
+
+0、HTML的笔记主要记录有关的表单元素的相关知识
 
 1、CSS中的笔记主要以注释的形式记录在HTML例子中，可以配合例子一起观看理解; 部分笔记也以文本形式记录，也同样以markdown的形式进行总结归纳，可以自由选择
 
@@ -16,5 +18,3 @@ My web development tutorials, including CSS、BOM、DOM、ES6、JavaScript、Web
 - 1-vue(包括vue的最基本知识，如数据绑定、MVVM模型、事件代理、渲染、指令、生命周期、组件等)
 - 1.2 Vue2(包括脚手架的配置、组件间的消息传递、vuex、路由等)
 - 2- Vue3(包括各种Composition API和各种新的组件介绍)
-
-5、常见面试题目的总结笔记以markdown形式存储在4-Interview Question中，包括HTML,CSS,JavaScript,webpack,vue
