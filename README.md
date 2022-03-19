@@ -1,5 +1,5 @@
 # 欢迎来到 JohannaChu 的 前端 快速入门代码仓库
-My web development tutorials, including HTML、CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
+My web development tutorials, including HTTP、HTML、CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
 
 0、HTML的笔记主要记录有关的表单元素的相关知识
 
