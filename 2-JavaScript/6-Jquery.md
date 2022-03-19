@@ -30,7 +30,7 @@
 ## 2、jQuery的基本使用
 （1）入口函数：
 
-```
+```js
 $(function() {
     .... //此处是页面DOM加载完成的入口
 });
@@ -39,7 +39,7 @@ $(function() {
             $('div').hide();
         })
 ```
-```
+```js
 $(document).ready(function()){
     ... //此处是页面DOM加载完成的入口
 };
@@ -68,7 +68,7 @@ var myDiv = document.querySelector('div'); //myDiv是DOM对象
 $('div'); //$('div')是一个jquery对象
 ```
 （3）JQuery对象本质是：利用$对DOM对象包装后产生的对象(是伪数组形式存储的)
-JQuery对象只能是以哦那个JQuery方法，DOM对象则只能使用原生的javascript的属性和方法
+JQuery对象只能是以那个JQuery方法，DOM对象则只能使用原生的javascript的属性和方法
 
 （4）JQuery和DOM对象的转换
 1 DOM对象转换为JQuery对象：$(DOM对象)
@@ -114,7 +114,7 @@ ps: 由于都是方法，因此都需要加上括号
 （5）第n个元素：有两种方法可以使用(下面注释)
 **重点记住:parent()、chiledren()、find()、sibilngs()、eq()**
 
-```
+```js
 $(function(){
     //鼠标经过
     $(".nav>li").mouseover(function() {
@@ -141,7 +141,7 @@ $("ul li").eq(2).css("color","red");
 ## 5、案例
 （1）排他思想
 
-```
+```html
     <button>快速</button>
     <button>快速</button>
     <button>快速</button>
@@ -170,7 +170,7 @@ $("ul li").eq(2).css("color","red");
 # 四、JQuery样式操作
 ## 1、修改样式之CSS方法
 
-```
+```js
 (1)参数只写属性名，则是返回属性值
 $(this).css('color');
 
@@ -191,7 +191,7 @@ $(this).css({
 ## 2、修改样式之设置类方法
 作用等同于以前的classList，可以操作样式，但是注意**里面的参数不要加点(类名选择器)**
 
-```
+```js
 (1)添加类
 $('div').addClass('current');
 
@@ -221,7 +221,7 @@ fn:回调函数，在动画完成时执行的函数，每个元素执行一次
 （2）slideDown([s],[e],[fn])
 （3）slideToggle([s],[e],[fn])
 
-```
+```js
 事件切换hover就是鼠标经过和离开的复合写法
 $(".nav li").hover(function(){
     $(this).children("ul").sildeDown(200);
@@ -323,7 +323,7 @@ $("input").val("123"); //里面有引号
 1.2 里面的回调函数有两个参数：index是每个元素的索引号；demEle是每个DOM元素对象，不是jquery对象（因此如果想要使用jquery方法则需要把dom元素转换为jquery对象）
 1.3 JQuery隐式迭代时对同一类元素做了同样的操作；如果想要给同一类元素做不同的操作则需要用到遍历
 
-```
+```js
 $function(){
     var sum = 0;
     1. each()方法遍历元素
