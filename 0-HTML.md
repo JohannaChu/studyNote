@@ -60,16 +60,16 @@
 >    
 ><!-- form 表单post提交，默认会刷新到 action 页面 -->
 >    <form action="http://localhost:3008/user" method="POST" name="post提交">
->      <p>name: <input type="text" name="username"></p>
->      <p>password: <input type="password" name="password"></p>
->      <input type="submit" value="提交">
+>      	<p>name: <input type="text" name="username"></p>
+>      	<p>password: <input type="password" name="password"></p>
+>      	<input type="submit" value="提交">
 >    </form>
 >    
 ><!-- form 表单get 提交, 默认刷新action 页面 -->
 >    <form action="http://localhost:3008/user" method="GET" name="get提交">
->      <p>name: <input type="text" name="username"></p>
->      <p>password: <input type="password" name="password"></p>
->      <input type="submit" value="提交">
+>      	<p>name: <input type="text" name="username"></p>
+>     	<p>password: <input type="password" name="password"></p>
+>      	<input type="submit" value="提交">
 >    </form>
 >```
 >
