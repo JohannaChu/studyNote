@@ -40,7 +40,8 @@ $(function() {
         })
 ```
 ```js
-$(document).ready(function()){
+$(document).ready(function()){  
+    //ready函数作用是等待DOM树渲染完毕之后执行，不需要等img,video等大型资源加载完毕才执行；load就是等全部外部资源加载完
     ... //此处是页面DOM加载完成的入口
 };
 例子：
@@ -77,6 +78,7 @@ var myvideo = document.querySelector('video');
 $(myvideo) //这里面不需要加引号
 ```
 2 JQuery对象转换为DOM对象（两种方式）：
+
 ```
 $('div')[index]  //index是索引号
 $('div').get(index)
@@ -400,7 +402,7 @@ $(".back").click(function(){
 ## 1、事件注册
 是以前写的element.事件(function{})，但只能对一个对象做一件事情，无法同时做多件事情
 
-##2、事件处理
+## 2、事件处理
 （1）语法：element.on(events,[selsector],fn)
 events:一个或多个用空格分隔的事件类型，例如click或keydown
 selector:元素的子元素选择器
