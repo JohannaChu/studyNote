@@ -1,5 +1,5 @@
 # 欢迎来到 JohannaChu 的 前端 快速入门代码仓库
-My web development tutorials, including HTTP、HTML、CSS、BOM、DOM、ES6、JavaScript、Webpack、Vue
+My web development tutorials, including HTTP、HTML、CSS、JavaScript、BOM、DOM、ES6、Jquery、Webpack、Vue
 
 0、HTML的笔记主要记录有关的表单元素的相关知识
 
@@ -11,6 +11,7 @@ My web development tutorials, including HTTP、HTML、CSS、BOM、DOM、ES6、Ja
 - BOM(包括BOM的构成、窗口加载事件等)
 - ES6(包括Symbol、异步函数Promise、模块化方法、async和await等)
 - JavaScript高级(包括原型与原型链、执行上下文与执行上下文栈、作用域与作用域链、闭包等) --> 推荐
+- JQuery(包括JQuery的选择器、样式操作、属性和元素操作、事件操作、对象拷贝等)
     
 3、webpack以markdown形式存储在文件夹中，包括webpack4和webpack5的相关知识 --> 推荐
 
