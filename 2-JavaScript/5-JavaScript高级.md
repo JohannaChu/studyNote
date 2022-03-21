@@ -625,9 +625,9 @@
 >    function Foo(){  } 
 >    //实际上等于var Foo = new Function(),因此Foo实际上也是Function()的实例对象，有__proto__属性
 >    //所有函数(funtion)都有两个属性，__proto__和prototype
->             
+>                
 >    //特例：只有函数的显示原型属性等于它自身的隐式原型属性(图中的第二个prototype和__proto__指向同一个Function.prototype) --> 相当于Function = new Function() new自己本身 --> 所有函数的prototype都是一样的，都是 new Function()
->             
+>                
 >    //第三个__proto__指向：Object是Function()的实例对象 --> 原因：任何函数(无论是内置函数还是自定义函数)都是Function的实例对象(new Function()) --> Object也是Object函数
 >
 > ![image-20210714212945164](image/image-20210714212945164.png) 
@@ -1060,7 +1060,7 @@
 >    var arr = [1,2,3,4,5]
 >     var arr3 = arr.filter(item => item % 2 == 0)
 >    console.log(arr3)// [2,4]
->    ```
+>   ```
 
 ## 5、闭包
 
@@ -1268,14 +1268,14 @@
 >       function doOtherthing () {
 >         console.log('doOtherthing() '+msg.toLowerCase())
 >       }
->                                                     
+>                                                         
 >       //向外暴露对象(给外部使用的方法)
 >       return {
 >         doSomething: doSomething,
 >         doOtherthing: doOtherthing
 >       }
 >     }
->                                                     
+>                                                         
 >     -----------------------------------------------------------------
 >     // myModule2.js   
 >     (function () {
@@ -1288,14 +1288,14 @@
 >       function doOtherthing () {
 >         console.log('doOtherthing() '+msg.toLowerCase())
 >       }
->                                                     
+>                                                         
 >       //向外暴露对象(给外部使用的方法)
 >       window.myModule2 = {
 >         doSomething: doSomething,
 >         doOtherthing: doOtherthing
 >       }
 >     })()    
->                                                         
+>                                                             
 >     ```
 >
 >2. 模块调用
@@ -1994,7 +1994,7 @@
 >
 >> 当我们调用一个方法的时候，js会生成一个与这个方法对应的执行环境（context），又叫`执行上下文`。这个执行环境中存在着这个方法的私有作用域、上层作用域的指向、方法的参数，这个作用域中定义的变量以及这个作用域的this对象。 而当一系列方法被依次调用的时候，因为js是单线程的，同一时间只能执行一个方法，于是这些方法被排队在一个单独的地方。这个地方被称为执行栈。
 >
->当一个脚本第一次执行的时候，js引擎会解析这段代码，并将其中的同步代码按照执行顺序加入执行栈中，然后从头开始执行。如果当前执行的是一个方法，那么js会向执行栈中添加这个方法的执行环境，然后进入这个执行环境继续执行其中的代码。`当这个执行环境中的代码 执行完毕并返回结果后，js会退出这个执行环境并把这个执行环境销毁，回到上一个方法的执行环境`。这个过程反复进行，直到执行栈中的代码全部执行完毕。
+>当一个脚本第一次执行的时候，js引擎会解析这段代码，并将其中的同步代码按照执行顺序加入执行栈中，然后从头开始执行。如果当前执行的是一个方法，那么js会向执行栈中添加这个方法的执行环境，然后进入这个执行环境继续执行其中的代码。当这个执行环境中的代码 执行完毕并返回结果后，js会退出这个执行环境并把这个执行环境销毁，回到上一个方法的执行环境。这个过程反复进行，直到执行栈中的代码全部执行完毕。
 >
 >此处继续拿出栈图加深理解:<img src="image/执行栈与事件队列.gif" style="zoom:80%;" /> 
 >
@@ -2014,7 +2014,7 @@
 >
 >图中的stack表示我们所说的执行栈，web apis则是代表一些异步事件，而callback queue即事件队列。
 >
->以上的事件循环过程是一个宏观的表述，实际上因为异步任务之间并不相同，因此他们的执行优先级也有区别。`不同的异步任务被分为两类：微任务（micro task）和宏任务（macro task）`,此部分看下方详解
+>以上的事件循环过程是一个宏观的表述，实际上因为异步任务之间并不相同，因此他们的执行优先级也有区别。不同的异步任务被分为两类：微任务（micro task）和宏任务（macro task）
 
 
 ## 5、Web Workers

@@ -1030,6 +1030,7 @@ console.log(arr.join('&'));  //输出'1&2&3'
 
 总结：
 方法：push(在数组末尾添加一个或者多个数组元素)，unshift，pop(删除数组最后一个元素)，shift，reverse,splice,concat
+
 对原数组发生改变：push,unshift,pop,shift,reverse,splice
 对原数组不发生改变：concat,slice(一般就要var 新变量来接收新数组),filter
 
