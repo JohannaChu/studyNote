@@ -12,7 +12,8 @@ My web development tutorials, including HTTP、HTML、CSS、JavaScript、BOM、D
 - ES6(包括Symbol、异步函数Promise、模块化方法、async和await等)
 - JavaScript高级(包括原型与原型链、执行上下文与执行上下文栈、作用域与作用域链、闭包等) --> 推荐
 - JQuery(包括JQuery的选择器、样式操作、属性和元素操作、事件操作、对象拷贝等)
-    
+  
+
 3、webpack以markdown形式存储在文件夹中，包括webpack4和webpack5的相关知识 --> 推荐
 
 4、vue以markdown的形式存储在对应文件夹，内有vue2和vue3的相关知识，其中vue2分两个.md文件描述 --> 推荐
@@ -23,3 +24,6 @@ My web development tutorials, including HTTP、HTML、CSS、JavaScript、BOM、D
 5、计算机原理和网络概述与HTTP协议的相关知识主要包含在对应文件夹:  --> 推荐
 - 1-计算机网络概述(包括计算机网络结构、网络应用、各层网络模型的具体解释和网络安全等)
 - 2-HTTP(包括HTTP概念和工作流程，以及常见的HTTP问题)
+
+6、数据结构与算法的基本知识与相应题目应用
+- 数据结构.md(主要是《大话数据结构》书中知识点的总结)
