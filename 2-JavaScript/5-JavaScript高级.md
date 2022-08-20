@@ -552,7 +552,7 @@
 >
 > * 程序员能直接操作显式原型, 但不能直接操作隐式原型(ES6之前)
 >
-> * 函数的显示原型指向的对象默认是空Object的实例对象(但Object不满足此条件，Object指向的是null) --> 所有函数的原型对象默认都是Object的实例(Object除外)
+> * 函数的显式原型指向的对象默认是空Object的实例对象(但Object不满足此条件，Object指向的是null) --> 所有函数的原型对象默认都是Object的实例(Object除外)
 >
 >   ```
 >   console.log(Fn.prototype instanceof Object) //true
@@ -625,9 +625,9 @@
 >    function Foo(){  } 
 >    //实际上等于var Foo = new Function(),因此Foo实际上也是Function()的实例对象，有__proto__属性
 >    //所有函数(funtion)都有两个属性，__proto__和prototype
->                
+>                   
 >    //特例：只有函数的显示原型属性等于它自身的隐式原型属性(图中的第二个prototype和__proto__指向同一个Function.prototype) --> 相当于Function = new Function() new自己本身 --> 所有函数的prototype都是一样的，都是 new Function()
->                
+>                   
 >    //第三个__proto__指向：Object是Function()的实例对象 --> 原因：任何函数(无论是内置函数还是自定义函数)都是Function的实例对象(new Function()) --> Object也是Object函数
 >
 > ![image-20210714212945164](image/image-20210714212945164.png) 
@@ -1268,14 +1268,14 @@
 >       function doOtherthing () {
 >         console.log('doOtherthing() '+msg.toLowerCase())
 >       }
->                                                         
+>                                                             
 >       //向外暴露对象(给外部使用的方法)
 >       return {
 >         doSomething: doSomething,
 >         doOtherthing: doOtherthing
 >       }
 >     }
->                                                         
+>                                                             
 >     -----------------------------------------------------------------
 >     // myModule2.js   
 >     (function () {
@@ -1288,14 +1288,14 @@
 >       function doOtherthing () {
 >         console.log('doOtherthing() '+msg.toLowerCase())
 >       }
->                                                         
+>                                                             
 >       //向外暴露对象(给外部使用的方法)
 >       window.myModule2 = {
 >         doSomething: doSomething,
 >         doOtherthing: doOtherthing
 >       }
 >     })()    
->                                                             
+>                                                                 
 >     ```
 >
 >2. 模块调用
