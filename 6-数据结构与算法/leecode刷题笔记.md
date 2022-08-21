@@ -1,3 +1,5 @@
+
+
 # 数组
 
 ## 基础习题锻炼
@@ -14,32 +16,228 @@
 >解释: 9 出现在 nums 中并且下标为 4
 >```
 >
->```js
->var search = function(nums, target) {
->    let left = 0;
->    let right = nums.length - 1;
->    while(left <= right){   
->        let middle = Math.floor((right - left)/2) + left
->        if(nums[middle] > target){
->            right = middle -1;
->        }else if(nums[middle] < target){
->            left = middle +1;
->        }else{
->            return middle
->        }
->    }
->    return -1
->    
->};
+```js
+var search = function(nums, target) {
+let left = 0;
+let right = nums.length - 1;
+while(left <= right){   
+   let middle = Math.floor((right - left)/2) + left
+   if(nums[middle] > target){
+       right = middle -1;
+   }else if(nums[middle] < target){
+       left = middle +1;
+   }else{
+       return middle
+   }
+}
+return -1
+
+};
+```
+
+
+
+
+
+### 移除元素
+
+>给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度。
+>
+>不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并 原地 修改输入数组。
+>
+>元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+>
 >```
+>输入：nums = [3,2,2,3], val = 3
+>输出：2, nums = [2,2]
+>解释：函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。你不需要考虑数组中超出新长度后面的元素。例如，函数返回的新长度为 2 ，而 nums = [2,2,3,3] 或 nums = [2,2,0,0]，也会被视作正确答案。
+>```
+>
+
+移除元素用到的做法是快慢指针，其中快指针表示新数组的元素，慢指针是新数组的下标
+
+- 快指针：寻找新数组的元素 ，新数组就是不含有目标元素的数组
+- 慢指针：指向更新 新数组下标的位置
+
+```js
+//时间复杂度O(n),空间复杂度O(1)，类似js数组delete方法接口的时间复杂度也是O(n)
+var removeElement = function(nums, val) {
+    let slow = 0; //slow是慢指针
+    for(let i = 0;i < nums.length; i++){ //这里的i其实代表快指针front
+        if(nums[i] !== val){
+            nums[slow] = nums[i]
+            slow++; //这句和上面的代码也可以整合写成nums[slow++] = nums[i]
+        }
+    }
+    return slow
+};
+```
+
+### 有序数组的平方
+
+>给你一个按 **非递减顺序** 排序的整数数组 `nums`，返回 **每个数字的平方** 组成的新数组，要求也按 **非递减顺序** 排序
+>
+>```
+>输入：nums = [-4,-1,0,3,10]
+>输出：[0,1,9,16,100]
+>解释：平方后，数组变为 [16,1,0,9,100]
+>排序后，数组变为 [0,1,9,16,100]
+>
+>```
+
+```js
+//双指针方法
+var sortedSquares = function(nums) {
+    let n = nums.length;
+    let res = new Array(n).fill(0); //新数组
+    let i = 0, j = n - 1, k = n - 1;  //i相当于左指针，j相当于右指针，k是新数组的指针
+    while (i <= j) { //一定要等于，否则会错过等于时的元素
+        let left = nums[i] * nums[i],
+            right = nums[j] * nums[j];
+        if (left < right) {
+            res[k] = right;
+            k--; //res[k] = right;和k--; 可以结合写成res[k--] = right;
+            j--;
+        } else {
+            res[k] = left;
+            k--;
+            i++;
+        }
+    }
+    return res;
+};
+
+
+
+//api方法：注意，这里使用map方法当前所选元素是必填项，例如 nums=[1,2,3] nums.map(parseInt)=[1,NaN,NaN]
+//平方可以用Math.pow(x,2)  sort在排序时如果没有具体传入排序规则默认是按照ASCII顺序排序，即使是数组中是数字，也会转化成字符串按照ASCII排序，因此排序出来的结果不是正确结果
+// (sort排序方法：https://m.php.cn/article/480049.html)
+var sortedSquares = function(nums) {
+    let newMums = nums.map((e) => e*e)
+    function f(a,b){ //从小到大，从大到小则是-(a-b)
+        return (a-b)
+    }
+    return newMums.sort(f)
+};
+```
+
+### 长度最小的子数组
+
+>给定一个含有 n 个正整数的数组和一个正整数 target 。
+>
+>找出该数组中满足其和 ≥ target 的长度最小的 连续子数组 [numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0 。
+>
+>```
+>输入：target = 7, nums = [2,3,1,2,4,3]
+>输出：2
+>解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+>
+>输入：target = 11, nums = [1,1,1,1,1,1,1,1]
+>输出：0
+>```
+
+```js
+var minSubArrayLen = function(target, nums) {
+    let i=sum=sublength=0; //i为起始位置，j为终止位置
+    //result初始值一定是最大值，而最大值是length+1而不是length，这里的result可以等于Infinity
+    let result = nums.length+1  
+    for(let j=0;j<nums.length;j++){
+        sum += nums[j]
+        while(sum>=target){
+            sublength = j-i+1   //相当于一个中间缓存值
+            result=sublength<result? sublength:result
+            sum -= nums[i]
+            i++ 
+        }
+    }
+    return result==nums.length+1? 0:result 
+    //如果result为Infinity则这里也要判断是否等于Infinity，相当于没有进入过第二个while里面
+};
+
+```
+
+
+
+
 
 ## 热题
 
-### 1. 
+### 34. 在排序数组中查找元素的第一个和最后一个位置
+
+>给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+>
+>如果数组中不存在目标值 target，返回 [-1, -1]。你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+>
+>```
+>输入：nums = [5,7,7,8,8,10], target = 8
+>输出：[3,4]
+>
+>输入：nums = [5,7,7,8,8,10], target = 6
+>输出：[-1,-1]
+>```
+
+```js
+api方法 //indexOf的方法，不止可以用于string，也可以用于数组
+var searchRange = function(nums, target){
+    if(nums.length <= 0){
+        return [-1, -1];
+    }
+   let first = nums.indexOf(target);
+   let last = nums.lastIndexOf(target);
+   return [first,last];
+}
+```
 
 
 
-### 2. 两数之和
+### 283. 移动零
+
+>给定一个数组 `nums`，编写一个函数将所有 `0` 移动到数组的末尾，同时保持非零元素的相对顺序。
+>
+>```
+>输入: nums = [0,1,0,3,12]
+>输出: [1,3,12,0,0]
+>
+>输入: nums = [0]
+>输出: [0]
+>```
+
+```js
+//直接移动非零值，剩下的全部置为0
+var moveZeroes = function(nums) {
+    let slow = 0
+    for(let i=0;i<nums.length;i++){
+        if(nums[i] !== 0){
+            nums[slow] = nums[i]
+            slow++
+        }
+    }
+     for(let j=slow;j<nums.length;j++){
+         nums[j] = 0
+    }
+    return nums
+};
+
+//也可以一次排序，原理是中间交换
+var moveZeroes = function(nums) {
+    let slow = 0,tem=0;
+    for(let i=0;i<nums.length;i++){
+        if(nums[i] !== 0){
+            tem = nums[slow]
+            nums[slow] = nums[i]
+            nums[i] = tem
+            slow++
+        }
+    }
+    return nums
+};
+如果看不懂可以看：https://www.bilibili.com/video/BV1EB4y1Q7qV?spm_id_from=333.337.search-card.all.click
+里面包含了两种方法
+```
+
+
+
+### 1. 两数之和
 
 >给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 **和为目标值** *`target`* 的那 **两个** 整数，并返回它们的数组下标。
 >
@@ -89,11 +287,71 @@ twoSum([2,7,11,15],9)
 - set(key,value):set()函数设置键名key所对应的键值为value,该函数的返回值是当前的Map实例;
 - get(key):get()函数返回key对应的键值,如果找不到对应的key,则返回undefined.
 
+## 练习题
 
+### 904. 水果成篮
+
+> 你正在探访一家农场，农场从左到右种植了一排果树。这些树用一个整数数组 fruits 表示，其中 fruits[i] 是第 i 棵树上的水果 种类 。
+>
+> 你想要尽可能多地收集水果。然而，农场的主人设定了一些严格的规矩，你必须按照要求采摘水果：
+>
+> 你只有 两个 篮子，并且每个篮子只能装 单一类型 的水果。每个篮子能够装的水果总量没有限制。
+> 你可以选择任意一棵树开始采摘，你必须从 每棵 树（包括开始采摘的树）上 恰好摘一个水果 。采摘的水果应当符合篮子中的水果类型。每采摘一次，你将会向右移动到下一棵树，并继续采摘。
+> 一旦你走到某棵树前，但水果不符合篮子的水果类型，那么就必须停止采摘。
+> 给你一个整数数组 fruits ，返回你可以收集的水果的 最大 数目
+>
+> ```
+> 输入：fruits = [1,2,1]
+> 输出：3
+> 解释：可以采摘全部 3 棵树。
+> 
+> 输入：fruits = [0,1,2,2]
+> 输出：3
+> 解释：可以采摘 [1,2,2] 这三棵树。
+> 如果从第一棵树开始采摘，则只能采摘 [0,1] 这两棵树。
+> ```
+>
+> 教程：
+>
+> https://www.bilibili.com/video/BV1d7411Q7vx?spm_id_from=333.337.search-card.all.click&vd_source=62f15965c1a32c0c4f9349c8ea68315b
+
+这道题用的是滑动窗口配合在map存储的最后key和value判断是否大于两个种类的水果（key代表2个不重复时出现的树对应的值，value代表不重复时最后出现（因为是在不断更新的）对应的下标）
+
+```js
+var totalFruit = function(fruits) {
+    const map=new Map()
+    let max = 1; //当只有一棵树的时候最大为1
+    let j=0; //起始位置
+    for(let i=0;i<fruits.length;i++){ //i代表终止位置
+        map.set(fruits[i],i); //存入map中并且key为数值，value为实时更新最后出现的下标值
+        if(map.size>2){
+            let minIndex = Infinity;
+            //移除较小的那个数值
+            for(let [fruits,index] of map){
+                if(index<minIndex){
+                    minIndex = index
+                }
+            }
+            map.delete(fruits[minIndex])
+            j=minIndex+1
+        }
+        max = Math.max(max,i-j+1) //每次都比较哪个比较大
+    }
+    return max
+};
+```
+
+
+
+## 总结
+
+![数组总结](D:\notesfor\6-数据结构与算法\asseet\数组总结.png)
 
 # 字符串
 
-## 1. 无重复字符的最长子串
+## 热题
+
+### 3. 无重复字符的最长子串
 
 >给定一个字符串 `s` ，请你找出其中不含有重复字符的 **最长子串** 的长度
 >
@@ -141,7 +399,7 @@ var lengthOfLongestSubstring = function(s) {
 };
 ```
 
-## 2. 最长回文子串
+### 5. 最长回文子串
 
 >给你一个字符串 `s`，找到 `s` 中最长的回文子串。
 >
