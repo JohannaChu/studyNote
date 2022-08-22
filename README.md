@@ -26,5 +26,5 @@ My web development tutorials, including HTTP、HTML、CSS、JavaScript、BOM、D
 - 2-HTTP(包括HTTP概念和工作流程，以及常见的HTTP问题)
 
 6、数据结构与算法的基本知识与相应题目应用
-- 数据结构.md(主要是《大话数据结构》书中知识点的总结)
-- Leecode刷题笔记.md(主要包含leecode刷题的各种总结和对比)
+- 数据结构(主要是《大话数据结构》书中知识点的总结)
+- Leecode刷题笔记(主要包含leecode刷题的各种总结和对比)
