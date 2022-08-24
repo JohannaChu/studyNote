@@ -615,6 +615,106 @@ var removeNthFromEnd = function(head, n) {
 
 
 
+### 环形链表
+
+>给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+>
+>如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+>
+>```
+>输入：head = [3,2,0,-4], pos = 1
+>输出：返回索引为 1 的链表节点
+>解释：链表中有一个环，其尾部连接到第二个节点。
+>
+>输入：head = [1,2], pos = 0
+>输出：返回索引为 0 的链表节点
+>解释：链表中有一个环，其尾部连接到第一个节点。
+>```
+
+```js
+var detectCycle = function(head) {
+    var fast = slow = head
+    while(fast && fast.next){ 
+        //判断fast节点以及其下一位是否为null
+        //如果没有fast.next则当其为null时执行fast.next.next会报错
+        fast = fast.next.next;
+        slow = slow.next;
+        if(fast === slow){
+            var index1 = fast;
+            var index2 = head;
+            while(index1 !== index2){
+                index1 = index1.next;
+                index2 = index2.next
+            }
+            return index1;
+        }
+    }
+    return null;
+};
+```
+
+
+
+## 总结
+
+### 链表的基础知识
+
+- 链表的种类主要为：单链表，双链表，循环链表
+- 链表的存储方式：链表的节点在内存中是分散存储的，通过指针连在一起
+
+![链表总结](D:\notesfor\6-数据结构与算法\asseet\链表总结.png)
+
+
+
+# 哈希表
+
+> **当我们遇到了要快速判断一个元素是否出现集合里的时候，就要考虑哈希法**
+
+## 基础习题锻炼
+
+### 有效的字母异位词
+
+>给定两个字符串 `*s*` 和 `*t*` ，编写一个函数来判断 `*t*` 是否是 `*s*` 的字母异位词
+>
+>```
+>输入: s = "anagram", t = "nagaram"
+>输出: true
+>
+>输入: s = "rat", t = "car"
+>输出: false
+>```
+
+```js
+//方法一
+var isAnagram = function(s,t){
+    function getLocation(str){
+        let arr = Array(26).fill(0);
+        let base = 'a'.charCodeAt();
+        for(let i=0;i<str.length;i++){
+            ascii = str[i].charCodeAt() - base;
+            arr[ascii]++;
+        }
+        return arr.join('')
+    }
+    return getLocation(s) === getLocation(t)
+}
+//方法二
+var isAnagram = function(s, t) {
+    if(s.length !== t.length) return false;
+    const resSet = new Array(26).fill(0);
+    const base = "a".charCodeAt();
+    for(const i of s) {
+        resSet[i.charCodeAt() - base]++;
+    }
+    for(const i of t) {
+        if(!resSet[i.charCodeAt() - base]) return false;
+        resSet[i.charCodeAt() - base]--;
+    }
+    return true;
+};
+```
+
+
 
 # 字符串
 
