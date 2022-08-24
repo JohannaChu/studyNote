@@ -347,6 +347,275 @@ var totalFruit = function(fruits) {
 
 ![数组总结](D:\notesfor\6-数据结构与算法\asseet\数组总结.png)
 
+
+
+# 链表
+
+## 基础习题锻炼
+
+### 移除链表
+
+>给你一个链表的头节点 `head` 和一个整数 `val` ，请你删除链表中所有满足 `Node.val == val` 的节点，并返回 **新的头节点**
+
+```js
+var removeElements = function(head, val) {
+    //定义一个虚拟头节点
+    var dummyHead = new ListNode(0,head)
+    var tempNode = dummyHead 
+    //定义一个临时指针来遍历，如果直接使用头节点遍历的话头节点不断改变最后无法获得原本的头节点
+    //头节点指向dummyHead而不是dummyHead.next的原因在于如果指向的是next则在删除时无法获得上一个链表的值，无法删除
+    while(tempNode.next){ //指向实际上的头节点
+        if(tempNode.next.val === val){ //是next.val因为只有next.val才知道上一个链表的位置
+            tempNode.next = tempNode.next.next
+            continue //这里一定要有continue,否则会报错；因为不执行tempNode = tempNode.next这句
+        }
+        tempNode = tempNode.next
+    }
+    return dummyHead.next
+};
+```
+
+
+
+### 设计链表
+
+>设计链表的实现。您可以选择使用单链表或双链表。单链表中的节点应该具有两个属性：val 和 next。val 是当前节点的值，next 是指向下一个节点的指针/引用。如果要使用双向链表，则还需要一个属性 prev 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
+>
+>在链表类中实现这些功能：
+>
+>get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+>addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+>addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+>addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+>deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。
+
+```js
+// //使用class关键字定义一个类，本质上是一个function，定义了同一组对象（又称为实例）共有的属性和方法
+
+// //constructor方法是类的默认方法，通过new生成实例对象的时候就会被调用，一个类必须有constructor方法，
+// //如果没有显式定义，一个空的constructor就会被创建
+// //一个类只有一个constructor方法，里面专门用于创建和初始化一个由class创建的对象
+
+// //类里面共有的属性和方法必须要添加this使用
+// //constructor 里面的 this 指向的是创建的实例对象
+class LinkNode {
+    //定义节点
+    constructor(val, next) {
+        this.val = val;
+        this.next = next;
+    }
+}
+
+/**
+ * Initialize your data structure here.
+ * 单链表 储存头尾节点 和 节点数量
+ */
+var MyLinkedList = function() {
+    this.size = 0;
+    this.tail = null;
+    this.head = null;
+};
+
+/**
+ * Get the value of the index-th node in the linked list. If the index is invalid, return -1. 
+ * @param {number} index
+ * @return {number}
+ */
+//定义一个getNode可以方便下面获取index下的节点
+MyLinkedList.prototype.getNode = function(index) {
+    if(index < 0 || index >= this.size) return null;
+    // 创建虚拟头节点
+    let cur = new LinkNode(0, this.head);
+    // 0 -> head
+    while(index>=0) { //这里要有等于0的情况
+        cur = cur.next;
+        index--;
+    }
+    return cur;
+};
+MyLinkedList.prototype.get = function(index) {
+    if(index < 0 || index >= this.size) return -1;
+    // 获取当前节点
+    return this.getNode(index).val;
+};
+
+/**
+ * Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtHead = function(val) { //这里的第一个元素表示头节点
+    const node = new LinkNode(val, this.head);
+    this.head = node; //新节点作为新的头节点
+    this.size++; //节点数加1
+    if(!this.tail) {
+        this.tail = node;
+    }
+};
+
+/**
+ * Append a node of value val to the last element of the linked list. 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtTail = function(val) {
+    const node = new LinkNode(val,null)
+    this.size++;
+    if(this.tail){
+        this.tail.next = node; //交换位置
+        this.tail = node;
+        return;
+    }
+    this.tail = node;
+    this.head = node;
+};
+
+
+/**
+ * Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. 
+ * @param {number} index 
+ * @param {number} val
+ * @return {void}
+ */
+MyLinkedList.prototype.addAtIndex = function(index, val) {
+    // 当index > size,索引越界，不能插入节点
+    if(index > this.size) return;
+     // 当index <= 0,新插入的节点为头节点
+    if(index <= 0) {
+        this.addAtHead(val);
+        return;
+    }
+    if(index === this.size) {
+        this.addAtTail(val);
+        return;
+    }
+    // 获取目标节点的上一个的节点
+    const node = this.getNode(index - 1);
+    node.next = new LinkNode(val, node.next);
+    this.size++;
+};
+
+/**
+ * Delete the index-th node in the linked list, if the index is valid. 
+ * @param {number} index
+ * @return {void}
+ */
+MyLinkedList.prototype.deleteAtIndex = function(index) {
+    //判断index是否在存在的节点之内
+    if(index < 0 || index >= this.size) return;
+    if(index === 0) {
+        this.head = this.head.next;
+        // 如果删除的这个节点同时是尾节点，要处理尾节点
+        if(index === this.size - 1){
+            this.tail = this.head
+        }
+        this.size--;
+        return;
+    }
+    // 获取目标节点的上一个的节点
+    const node = this.getNode(index - 1);    
+    node.next = node.next.next;
+    // 处理尾节点
+    if(index === this.size - 1) {
+        this.tail = node;
+    }
+    this.size--;
+};
+```
+
+
+
+### 反转链表
+
+>给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表
+>
+>```
+>输入：head = [1,2,3,4,5]
+>输出：[5,4,3,2,1]
+>```
+
+```js
+var reverseList = function(head) {
+    if(!head || !head.next) return head;
+    var cur = head; //双指针
+    var pre = null; //pre指向虚拟头，即head的前一个，即null
+    var temp = null //定义一个临时链表指向cur.next
+    while(cur){ //里面的条件相当于当cur指向null的时候
+        temp = cur.next //得先保存cur的下一个节点位置以便cur移动时可以赋值
+        cur.next = pre  //反转
+        pre = cur //往前走
+        cur = temp
+    }
+    return pre
+};
+```
+
+
+
+### 两两交换链表中的节点
+
+>给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+>
+>```
+>输入：head = [1,2,3,4]
+>输出：[2,1,4,3]
+>```
+
+```js
+var swapPairs = function(head) {
+    var dummpHead = new ListNode(0,head)
+    var cur = dummpHead
+    while(cur.next && cur.next.next){
+        //这里代表偶数时cur的下一个为null时跳出循环；或者奇数时cur.next.next为null时退出循环
+        var temp = cur.next  //这句和下一句一定要放在循环里面，因为temp和temp1是每次都会改变的
+        var temp1 = cur.next.next.next
+        cur.next = cur.next.next;
+        cur.next.next = temp;
+        temp.next = temp1;  //这句也可改为cur.next.next.next = temp1
+        cur = cur.next.next;
+    }
+    return dummpHead.next
+};
+```
+
+
+
+### 删除链表的倒数第n个节点
+
+>给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+>
+>```
+>输入：head = [1,2,3,4,5], n = 2
+>输出：[1,2,3,5]
+>
+>输入：head = [1], n = 1
+>输出：[]
+>```
+
+```js
+var removeNthFromEnd = function(head, n) {
+    var dummyHead = new ListNode(0,head);
+    var fast = dummyHead;
+    var slow = dummyHead; //快慢指针
+    while(n+1){
+        fast = fast.next;
+        n--;
+    }
+    while(fast){ 
+        //当快指针等于null时，也就是指向最后尾节点null(null相当于0,也就是false，会自动跳出循环)
+        //其他不为0的时候为true，会执行while里面的内容
+         fast = fast.next;
+         slow = slow.next;
+    }
+    //删除节点
+    slow.next= slow.next.next
+    return dummyHead.next
+};
+```
+
+
+
+
 # 字符串
 
 ## 热题
