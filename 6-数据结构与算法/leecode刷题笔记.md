@@ -82,7 +82,6 @@ var removeElement = function(nums, val) {
 >输出：[0,1,9,16,100]
 >解释：平方后，数组变为 [16,1,0,9,100]
 >排序后，数组变为 [0,1,9,16,100]
->
 >```
 
 ```js
@@ -236,56 +235,6 @@ var moveZeroes = function(nums) {
 ```
 
 
-
-### 1. 两数之和
-
->给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 **和为目标值** *`target`* 的那 **两个** 整数，并返回它们的数组下标。
->
->例如：
->
->```
->输入：nums = [2,7,11,15], target = 9
->输出：[0,1]
->解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1]
->```
-
-自己写的暴力解法：双层循环，复杂度为O(n^2)
-
-```js
-var twoSum = function(nums, target) {
-    for(let i=0;i<nums.length;i++){
-        for(let j=i+1;j<nums.length;j++){
-            if(nums[i]+nums[j] === target){
-                return [i,j]
-            }
-        }
-    }
-};
-twoSum([2,7,11,15],9)
-```
-
-优化解法：利用HashMap，复杂度为O(n)，在循环的时候进行查找将HashMap的Key定位nums[i]，Value定义为i
-
-```js
-var twoSum = function(nums, target) {
-	const map = new Map();
-    for(let i=0;i<nums.length;i++){
-        const diff = target - nums[i]; //计算差值
-        if(!map.has(diff)){ //如果差值不在map中则意味着另一个元素还未进入map
-            map.set(nums[i],i)  //把目前的key和value值录入，其中key是nums[i],value是i
-    }else {
-        return [map.get((diff)),i];  //如果差值已经存在则直接输出目前的一个i和存在map里面的diff的key
-    }
-   }
-};
-twoSum([2,7,11,15],9)
-```
-
-一些函数知识点：
-
-- has(key):has()函数返回一个布尔值,表示某个键(key)是否在当前的Map实例中;
-- set(key,value):set()函数设置键名key所对应的键值为value,该函数的返回值是当前的Map实例;
-- get(key):get()函数返回key对应的键值,如果找不到对应的key,则返回undefined.
 
 ## 练习题
 
@@ -674,7 +623,7 @@ var detectCycle = function(head) {
 
 ### 有效的字母异位词
 
->给定两个字符串 `*s*` 和 `*t*` ，编写一个函数来判断 `*t*` 是否是 `*s*` 的字母异位词
+>给定两个字符串 `s` 和 `t` ，编写一个函数来判断 `t` 是否是 `s` 的字母异位词
 >
 >```
 >输入: s = "anagram", t = "nagaram"
@@ -713,6 +662,262 @@ var isAnagram = function(s, t) {
     return true;
 };
 ```
+
+
+
+### 两个数组的交集
+
+>给定两个数组 `nums1` 和 `nums2` ，返回 *它们的交集* 。输出结果中的每个元素一定是 **唯一** 的。我们可以 **不考虑输出结果的顺序**
+>
+>```
+>输入：nums1 = [1,2,2,1], nums2 = [2,2]
+>输出：[2]
+>
+>输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+>输出：[9,4]
+>解释：[4,9] 也是可通过的
+>```
+
+```js
+//使用set做去重操作
+var intersection = function(nums1, nums2) {
+    var set = new Set(nums1)
+    var res = new Set()
+    for(let i=0;i<nums2.length;i++){
+        if(set.has(nums2[i])){
+            res.add(nums2[i])
+        }
+    }
+    return [...res];  //这里不能直接return res,因为无法return一个set，只能把它转成数组输出
+};
+```
+
+
+
+### 快乐数
+
+>编写一个算法来判断一个数 n 是不是快乐数。
+>
+>「快乐数」 定义为：
+>
+>对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
+>然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
+>如果这个过程 结果为 1，那么这个数就是快乐数。
+>如果 n 是 快乐数 就返回 true ；不是，则返回 false 。
+>
+>```
+>输入：n = 19
+>输出：true
+>解释：
+>1^2 + 9^2 = 82
+>8^2 + 2^2 = 68
+>6^2 + 8^2 = 100
+>1^2 + 0^2 + 0^2 = 1
+>```
+
+```js
+function happyNums(n){
+    var sum = 0;
+    var arr = n.toString().split('');
+    for(let i=0;i<arr.length;i++){
+        sum += arr[i] * arr[i]
+    }
+    return sum
+}
+var isHappy = function(n) {
+    let set = new Set()
+    while(n !== 1 && !set.has(n)){
+        set.add(n)
+        n = happyNums(n)
+    }
+    return n === 1;
+};
+```
+
+
+
+### 两数之和
+
+>给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 **和为目标值** *`target`* 的那 **两个** 整数，并返回它们的数组下标。
+>
+>例如：
+>
+>```
+>输入：nums = [2,7,11,15], target = 9
+>输出：[0,1]
+>解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1]
+>```
+
+自己写的暴力解法：双层循环，复杂度为O(n^2)
+
+```js
+var twoSum = function(nums, target) {
+    for(let i=0;i<nums.length;i++){
+        for(let j=i+1;j<nums.length;j++){
+            if(nums[i]+nums[j] === target){
+                return [i,j]
+            }
+        }
+    }
+};
+twoSum([2,7,11,15],9)
+```
+
+优化解法：利用HashMap，复杂度为O(n)，在循环的时候进行查找将HashMap的Key定位nums[i]，Value定义为i
+
+```js
+var twoSum = function(nums, target) {
+	const map = new Map();
+    for(let i=0;i<nums.length;i++){
+        const diff = target - nums[i]; //计算差值
+        if(!map.has(diff)){ //如果差值不在map中则意味着另一个元素还未进入map
+            map.set(nums[i],i)  //把目前的key和value值录入，其中key是nums[i],value是i
+    }else {
+        return [map.get((diff)),i];  //如果差值已经存在则直接输出目前的一个i和存在map里面的diff的key
+    }
+   }
+};
+twoSum([2,7,11,15],9)
+```
+
+一些函数知识点：
+
+- has(key):has()函数返回一个布尔值,表示某个键(key)是否在当前的Map实例中;
+- set(key,value):set()函数设置键名key所对应的键值为value,该函数的返回值是当前的Map实例;
+- get(key):get()函数返回key对应的键值,如果找不到对应的key,则返回undefined.
+
+
+
+### 四数相加
+
+>给你四个整数数组 nums1、nums2、nums3 、 nums4 ，数组长度都是 n ，请计算多少个元组 (i, j, k, l) 能满足：
+>- 0 <= i, j, k, l < n
+>- nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+>
+>```
+>输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+>输出：2
+>解释：
+>两个元组如下：
+>1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+>2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+>```
+
+```js
+//自己的写法：
+var fourSumCount = function(nums1, nums2, nums3, nums4) {
+    var map = new Map();
+    for(let i=0;i<nums1.length;i++){
+        for(let j=0;j<nums2.length;j++){
+            var sum = nums1[i] + nums2[j]
+            var count = 1;
+            if(!map.has(sum)){ //如果元素不存在的时候
+                map.set(sum,count)
+            }else{
+                var temp = map.get(sum)
+                temp = temp + 1;
+                map.set(sum,temp)
+            }
+        }
+    }
+
+    var sum = 0;
+    for(let i=0;i<nums3.length;i++){
+        for(let j=0;j<nums4.length;j++){
+            var diff =  0 - (nums3[i] + nums4[j])
+            if(map.has(diff)){ //如果里面有存在的话
+                sum = sum + map.get(diff)
+            }
+        }
+    }
+    return sum
+};
+
+//更简洁的写法：
+var fourSumCount = function(nums1, nums2, nums3, nums4) {
+    const twoSumMap = new Map();
+    let count = 0;
+
+    for(const n1 of nums1) {
+        for(const n2 of nums2) {
+            const sum = n1 + n2;
+            twoSumMap.set(sum, (twoSumMap.get(sum) || 0) + 1)
+        }
+    }
+
+    for(const n3 of nums3) {
+        for(const n4 of nums4) {
+            const sum = n3 + n4;
+            count += (twoSumMap.get(0 - sum) || 0)
+        }
+    }
+
+    return count;
+};
+```
+
+
+
+
+
+## 热题
+
+### 49. 字母异位词分组
+
+>给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+>字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+>
+>```
+>输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+>输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+>
+>输入: strs = [""]
+>输出: [[""]]
+>```
+
+```js
+var groupAnagrams = function(strs) {
+    var map = new Map();
+    for(let i=0;i<strs.length;i++){
+        //对每一个数组内的值排序（因为sort方法是数组的方法，因此要先转成数组再排序再转成字符串）
+        let key = strs[i].split('').sort().join(''); 
+        if(map.get(key)){  //map中是否有值，其中key为排序后的字符串
+            var temp = map.get(key);  //临时数组
+            temp.push(strs[i]);
+            map.set(key,temp);  //相同key下赋值后一个会覆盖前一个
+        }else{
+            map.set(key,[strs[i]]);
+        }
+    }
+    return [...map.values()];  //map.values获取的值是类数组，需要转化为数组才能输出
+    //Array.from(map.values())
+};
+```
+
+
+
+### 438. 找到字符串中所有字母异位符
+
+>给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。异位词 指由相同字母重排列形成的字符串（包括相同的字符串)
+>
+>```
+>输入: s = "cbaebabacd", p = "abc"
+>输出: [0,6]
+>解释:
+>起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+>起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+>
+>输入: s = "abab", p = "ab"
+>输出: [0,1,2]
+>解释:
+>起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+>起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+>起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
+>```
+
+```js
+```
+
 
 
 
