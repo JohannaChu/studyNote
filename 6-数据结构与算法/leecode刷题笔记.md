@@ -75,6 +75,8 @@ var removeElement = function(nums, val) {
 
 ### 有序数组的平方
 
+>使用双指针的方法，一般的while里面的条件和两个指针的位置有关
+>
 >给你一个按 **非递减顺序** 排序的整数数组 `nums`，返回 **每个数字的平方** 组成的新数组，要求也按 **非递减顺序** 排序
 >
 >```
@@ -857,6 +859,90 @@ var fourSumCount = function(nums1, nums2, nums3, nums4) {
 ```
 
 
+
+### 三数之和
+
+>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+>注意：答案中不可以包含重复的三元组。
+>
+>```
+>输入：nums = [-1,0,1,2,-1,-4]
+>输出：[[-1,-1,2],[-1,0,1]]
+>
+>输入：nums = [0,1,1]
+>输出：[]
+>```
+
+难点在于去重，去重就不适用于哈希表的方法，因此在这里使用双指针的方法
+
+```js
+var sortFunction = function(a,b){
+    return a-b
+}
+var threeSum = function(nums) {
+    nums.sort(sortFunction) //先排序
+    var res = []
+    for(let i=0;i<nums.length;i++){
+        if(i>0 && nums[i] > 0) return res; //和前一个做对比去重，不能和后面一个(对nums[a]去重)
+        if(nums[i] == nums[i-1]) continue; //若第一个大于0则不可能相加等于0，跳出循环
+        var left = i + 1;
+        var right = nums.length - 1;
+        while(left < right){
+            var sum = nums[i] + nums[left] + nums[right];
+            if(sum > 0){
+                right--;
+            }else if(sum < 0){
+                left++;
+            }else{
+                res.push([nums[i],nums[left],nums[right]]);
+                while(left < right && nums[left] == nums[left+1]){
+                    left++; //对nums[b]去重
+                }
+                while(left < right && nums[right] == nums[right-1]){
+                    right--; //对nums[c]去重
+                }
+                left++;
+                right--;
+            }
+        }
+    }
+    return res 
+};
+```
+
+
+
+### 四数之和
+
+>
+
+```js
+//相比三数之和多了一层嵌套
+var fourSum = function(nums, target) {
+    const len = nums.length;
+    if(len < 4) return []; //没有四个数不符合题意直接返回空数组
+    nums.sort((a, b) => a - b);
+    const res = [];
+    for(let i = 0; i < len; i++) {
+        // 一级去重,去重i
+        if(i > 0 && nums[i] === nums[i - 1]) continue;
+        for(let j = i + 1; j < len; j++) {
+            // 二级去重,去重j
+            if(j > i + 1 && nums[j] === nums[j - 1]) continue;
+            let l = j + 1, r = len - 1;
+            while(l < r) {  //这里的逻辑和三数之和的逻辑一样,只是写的更简洁
+                const sum = nums[i] + nums[j] + nums[l] + nums[r];
+                if(sum < target) { l++; continue}
+                if(sum > target) { r--; continue}
+                res.push([nums[i], nums[j], nums[l], nums[r]]);
+                while(l < r && nums[l] === nums[++l]);
+                while(l < r && nums[r] === nums[--r]);
+            }
+        } 
+    }
+    return res;
+};
+```
 
 
 
