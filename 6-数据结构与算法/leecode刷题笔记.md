@@ -1006,8 +1006,169 @@ var groupAnagrams = function(strs) {
 
 
 
-
 # 字符串
+
+## 基础习题锻炼
+
+### 反转字符串
+
+>编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出。
+>不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题
+>
+>```
+>输入：s = ["h","e","l","l","o"]
+>输出：["o","l","l","e","h"]
+>```
+>
+>api方法可以使用reverse，但是这里要求的是O(1)
+
+```js
+var reverseString = function(s) {
+    //Do not return anything, modify s in-place instead.
+    reverse(s)
+};
+
+var reverse = function(s) {
+    var start = 0;
+    var end = s.length - 1;
+    while (start < end) {
+        temp = s[start];
+        s[start] = s[end];
+        s[end] = temp;
+        start++;
+        end--;
+    }
+};
+
+//reverse也可以写成下面更简洁的形式
+var reverse = function(s) {
+    let l = -1, r = s.length;
+    while(++l < --r) [s[l], s[r]] = [s[r], s[l]];
+};
+```
+
+
+
+### 反转字符串II
+
+>给定一个字符串 s 和一个整数 k，从字符串开头算起，每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符。
+>
+>如果剩余字符少于 k 个，则将剩余字符全部反转。
+>如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。
+>
+>```
+>输入：s = "abcdefg", k = 2
+>输出："bacdfeg"
+>```
+>解决方法：对for里面的条件进行处理，不要用常规的i++
+
+```js
+var reverseStr = function(s, k) {
+    const len = s.length;
+    let resArr = s.split(""); 
+    for(let i = 0; i < len; i += 2 * k) {
+        let l = i - 1, r = i + k > len ? len : i + k;
+        while(++l < --r) [resArr[l], resArr[r]] = [resArr[r], resArr[l]];
+    }
+    return resArr.join("");
+};
+```
+
+
+
+### 替换空格
+
+>请实现一个函数，把字符串 `s` 中的每个空格替换成"%20"
+>
+>```
+>输入：s = "We are happy."
+>输出："We%20are%20happy."
+>```
+
+```js
+//api方法：
+1.replace&replaceAll(/ /g代表全部都替换，如果只是' '就只会替换一次)
+var replaceSpace = function(s) {
+    return s.replace(/ /g,'%20')
+};
+
+2. split('') + join('%20')
+
+3. 双指针方法
+ var replaceSpace = function(s) {
+   // 字符串转为数组
+  const strArr = Array.from(s);
+  let count = 0;
+
+  // 计算空格数量
+  for(let i = 0; i < strArr.length; i++) {
+    if (strArr[i] === ' ') {
+      count++;
+    }
+  }
+
+  let left = strArr.length - 1;
+  let right = strArr.length + count * 2 - 1;
+
+  while(left >= 0) {
+    if (strArr[left] === ' ') {
+      strArr[right--] = '0';
+      strArr[right--] = '2';
+      strArr[right--] = '%';
+      left--;
+    } else {
+      strArr[right--] = strArr[left--];
+    }
+  }
+
+  // 数组转字符串
+  return strArr.join('');
+}; 
+```
+
+
+
+### 左旋转字符串
+
+>字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"
+>
+>```
+>输入: s = "abcdefg", k = 2
+>输出: "cdefgab"
+>```
+
+```js
+var reverseLeftWords = function (s, n) {
+    /** Utils */
+    function reverseWords(strArr, start, end) {
+        let temp;
+        while (start < end) {
+            temp = strArr[start];
+            strArr[start] = strArr[end];
+            strArr[end] = temp;
+            start++;
+            end--;
+        }
+    }
+    /** Main code */
+    let strArr = s.split('');
+    let length = strArr.length;
+    reverseWords(strArr, 0, n - 1);
+    reverseWords(strArr, n, length - 1);
+    reverseWords(strArr, 0, length - 1);
+    return strArr.join('');
+    
+    /** Main code也可以是这样 */
+    let strArr = s.split('');
+    let length = strArr.length;
+    reverseWords(strArr, 0, length - 1);
+    reverseWords(strArr, 0, length - n - 1);
+    reverseWords(strArr, length - n, length - 1);
+    return strArr.join('');
+};
+```
+
+
 
 ## 热题
 
