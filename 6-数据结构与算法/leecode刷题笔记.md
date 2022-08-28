@@ -1298,3 +1298,110 @@ var longestPalindrome = function (s) {
 }
 ```
 
+
+
+# 栈与队列
+
+>栈和队列在js中其实都是用数组代表，在进入的时候都是push，只是在出来的时候队列是先进先出，用的是shift方法（删除数组第一个元素，返回删除值）；栈用的是pop（删除数组最后一个元素，返回删除值）
+>
+
+## 基础习题锻炼
+
+### 用栈模拟队列
+
+>#### [232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/)
+
+```js
+var MyQueue = function() {
+    this.stackIn = [];
+    this.stackOut = [];
+};
+
+/** 
+ * @param {number} x
+ * @return {void}
+ */
+MyQueue.prototype.push = function(x) {
+    this.stackIn.push(x)
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.pop = function() {
+    var size = this.stackOut.length
+    if(size){
+        return this.stackOut.pop()
+    }
+    while(this.stackIn.length){
+        this.stackOut.push(this.stackIn.pop())
+    }
+    return this.stackOut.pop()
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.peek = function() {
+    const x = this.pop()
+    this.stackOut.push(x)
+    return x
+};
+
+/**
+ * @return {boolean}
+ */
+MyQueue.prototype.empty = function() {
+    return !this.stackIn.length && !this.stackOut.length
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * var obj = new MyQueue()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.peek()
+ * var param_4 = obj.empty()
+ */
+```
+
+### 用队列模拟栈
+
+>#### [225. 用队列实现栈](https://leetcode.cn/problems/implement-stack-using-queues/)
+
+### 有效括号
+
+>给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+>
+>有效字符串需满足：
+>
+>左括号必须用相同类型的右括号闭合。
+>左括号必须以正确的顺序闭合
+>
+>```
+>输入：s = "()"
+>输出：true
+>
+>输入：s = "([)]"
+>输出：false
+>```
+
+```js
+var isValid = function(s) {
+    if(s.length%2 !==0) return false;
+    const stack = [];
+    for(let i=0;i<s.length;i++){
+        if(s[i] == '('){
+            stack.push(')')
+        }else if(s[i] == '{'){
+            stack.push('}')
+        }else if(s[i] == '['){
+            stack.push(']')
+        }else{  //处理两种情况：不匹配以及栈为空的时候还有未匹配项
+            if(stack.length==0 || s[i] !== stack.pop()) return false
+        }
+    } //最后判断栈是否为空，即匹配完了但是还有剩余的是多出来的情况
+    return stack.length == 0
+};
+```
+
