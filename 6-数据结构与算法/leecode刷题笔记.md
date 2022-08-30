@@ -1405,3 +1405,240 @@ var isValid = function(s) {
 };
 ```
 
+### 逆波兰表达式
+
+>根据 逆波兰表示法，求表达式的值。
+>有效的算符包括 +、-、*、/ 。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
+>注意 两个整数之间的除法只保留整数部分。
+>可以保证给定的逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。
+>
+>```
+>输入：tokens = ["2","1","+","3","*"]
+>输出：9
+>解释：该算式转化为常见的中缀算术表达式为：((2 + 1) * 3) = 9
+>```
+
+```js
+var evalRPN = function(tokens) {
+    const s = new Map([
+        ["+", (a, b) => a * 1  + b * 1],
+        ["-", (a, b) => b - a],
+        ["*", (a, b) => b * a],
+        ["/", (a, b) => (b / a) | 0] //这里为什么要有0？
+    ]);
+    const stack = [];
+    for (const i of tokens) {
+        if(!s.has(i)) {
+            stack.push(i);
+        }else{
+            stack.push(s.get(i)(stack.pop(),stack.pop()))
+        }
+    }
+    return stack.pop();
+};
+```
+
+### 前k个高频元素
+
+>用了哈希表和堆排序（堆其实就是一个二叉树）
+
+```js
+```
+
+
+
+
+
+# 二叉树
+
+## 理论知识
+
+>满二叉树：其节点数量为2^k - 1，其中k为深度（从1，2，3这样开始计算）
+>
+>完全二叉树：除了底层以外，其他层都是满的，底层是从左到右连续的（底层不一定满，但是从左到右节点是连续的）--> 满二叉树一定是完全二叉树
+>
+>二叉搜索树：节点是有顺序的，左边的节点都小于中间节点；右边的都大于中间节点；左子树也是满足上述规律；搜索一个节点的时间复杂度为logn（对节点布局没有要求，只是对顺序有要求）
+>
+>平衡二叉搜索树：左子树和右子树的高度的绝对值的差值不能超过1；左子树也符合同样的上述规则  
+
+## 基础习题锻炼
+
+### 递归遍历
+
+>- 前序遍历：中左右
+>- 中序遍历：左中右
+>- 后序遍历：左右中
+>
+>做遍历的思路有以下三点：
+>
+>- 确定递归函数的参数和返回值
+>- 确定终止条件
+>- 确定单层递归的逻辑
+
+```js
+/**
+这里是js定义二叉树结点，需要知道他的原理
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)  //undefined是没有节点的情况
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */ 
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+
+//前序遍历：中左右
+var preorderTraversal = function(root) {
+    var res = [];
+    const dfs = function(root){
+        if(root === null) return;
+        res.push(root.val); //中
+        dfs(root.left);  //左
+        dfs(root.right);  //右
+    }
+    dfs(root);
+    return res;
+};
+
+//中序遍历：左中右
+var preorderTraversal = function(root) {
+    var res = [];
+    const dfs = function(root){
+        if(root === null) return ;
+        dfs(root.left);  //左
+        res.push(root.val); //中
+        dfs(root.right);  //右
+    }
+    dfs(root);
+    return res;
+};
+
+//后序遍历：左右中
+var preorderTraversal = function(root) {
+    var res = [];
+    const dfs = function(root){
+        if(root === null) return;
+        dfs(root.left);  //左
+        dfs(root.right);  //右
+        res.push(root.val); //中
+    }
+    dfs(root);
+    return res;
+};
+```
+
+
+
+### 非递归遍历
+
+>使用栈来模拟递归的逻辑
+
+```js
+//前序遍历：中左右 但是用栈来模拟的顺序就是中右左
+var preorderTraversal = function(root) {
+    var res = []; //存放最后结果的数组
+    if(!root) return res;
+    var stack = [root]; //模拟栈
+    while(stack.length){
+        var node = stack.pop();
+        res.push(node.val)
+        if(node.right){
+            stack.push(node.right)
+        }
+        if(node.left){
+            stack.push(node.left)
+        }
+    }
+    return res
+}
+
+//中序遍历：入栈的时候是左 右; 出栈的时候是左中右
+var inorderTraversal = function(root) {
+    var res = [];
+    var stack = [];
+    let cur = root
+    while(stack.length || cur){
+        if(cur){
+            stack.push(cur)
+            cur = cur.left
+        }else{
+            cur = stack.pop()
+            res.push(cur.val)
+            cur = cur.right 
+        }
+    }
+    return res
+};
+
+//后序遍历，就是前序遍历的左右调换位置并且最后返回的翻转过后的结果（中左右 --> 中右左 --> 左右中）
+var postorderTraversal = function(root) {
+    var res = []; //存放最后结果的数组
+    if(!root) return res;
+    var stack = [root]; //模拟栈
+    while(stack.length){
+        var node = stack.pop();
+        res.push(node.val)
+        if(node.left){
+            stack.push(node.left)
+        }
+        if(node.right){
+            stack.push(node.right)
+        }
+    }
+    return res.reverse()
+};
+```
+
+### 层序遍历
+
+>层序遍历需要配合一个队列来存放每一层元素的length和对应的值1
+
+```js
+var levelOrder = function(root) {
+    //二叉树的层序遍历
+    let res=[],queue=[];
+    queue.push(root);
+    if(root===null){
+        return res;
+    }
+    while(queue.length!==0){
+        // 记录当前层级节点数
+        let length=queue.length;
+        //存放每一层的节点 
+        let curLevel=[];
+        for(let i=0;i<length;i++){
+            let node=queue.shift();
+            curLevel.push(node.val);
+            // 存放当前层下一层的节点
+            if(node.left){
+                queue.push(node.left);
+            }
+            if(node.right){
+                queue.push(node.right);
+            }
+        }
+        //把每一层的结果放到结果数组
+        res.push(curLevel);
+    }
+    return res;
+};
+```
+
+### 翻转二叉树
+
+>利用递归法翻转二叉树
+
+```js
+var invertTree = function(root) {
+    if(root){
+        [root.left,root.right] = [root.right,root.left] //ES6的语法
+        if(root.left) invertTree(root.left)
+        if(root.right) invertTree(root.right)
+    }
+    return root
+};
+```
+
