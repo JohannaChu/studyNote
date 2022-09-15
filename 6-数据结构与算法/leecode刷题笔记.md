@@ -491,7 +491,7 @@ var reverseList = function(head) {
     var cur = head; //双指针
     var pre = null; //pre指向虚拟头，即head的前一个，即null
     var temp = null //定义一个临时链表指向cur.next
-    while(cur){ //里面的条件相当于当cur指向null的时候
+    while(cur){ //里面的条件相当于当cur指向null的时候结束
         temp = cur.next //得先保存cur的下一个节点位置以便cur移动时可以赋值
         cur.next = pre  //反转
         pre = cur //往前走
@@ -1556,18 +1556,19 @@ var preorderTraversal = function(root) {
 }
 
 //中序遍历：入栈的时候是左 右; 出栈的时候是左中右
+//因为处理顺序和遍历顺序不一样，所以需要一个指针来帮助遍历二叉树
 var inorderTraversal = function(root) {
     var res = [];
     var stack = [];
     let cur = root
-    while(stack.length || cur){
-        if(cur){
-            stack.push(cur)
-            cur = cur.left
-        }else{
+    while(stack.length || cur){ //相当于stack.length!==0 && cur!==0
+        if(cur){ //相当于if(cur!==0)
+            stack.push(cur) //记录指针访问过的元素
+            cur = cur.left //一路向左，遇到空再处理右孩子
+        }else{ //空节点的情况
             cur = stack.pop()
             res.push(cur.val)
-            cur = cur.right 
+            cur = cur.right  //cur指针来遍历节点，栈来记录遍历过的元素
         }
     }
     return res
@@ -1634,11 +1635,284 @@ var levelOrder = function(root) {
 ```js
 var invertTree = function(root) {
     if(root){
-        [root.left,root.right] = [root.right,root.left] //ES6的语法
+        [root.left,root.right] = [root.right,root.left] //ES6的语法 前序遍历
         if(root.left) invertTree(root.left)
         if(root.right) invertTree(root.right)
     }
     return root
+};
+```
+
+### 对称二叉树
+
+>只能使用后序遍历，因为要收集孩子的信息（左节点和右节点的信息）向上一级节点返回
+
+```js
+var isSymmetric = function(root) {
+    //使用递归遍历左右子树 递归三部曲
+    // 1. 确定递归的参数 root.left root.right和返回值true false 
+    const compareNode=function(left,right){
+        //2. 确定终止条件 空的情况
+        if(left===null&&right!==null||left!==null&&right===null){
+            return false;
+        }else if(left===null&&right===null){
+            return true;
+        }else if(left.val!==right.val){
+            return false;
+        }
+        //3. 确定单层递归逻辑
+        let outSide=compareNode(left.left,right.right); //这里其实就在做递归，里层会一直递归到null
+        let inSide=compareNode(left.right,right.left);
+        return outSide&&inSide;
+    }
+    if(root===null){
+        return true;
+    }
+    return compareNode(root.left,root.right);
+};
+```
+
+### 二叉树的最大深度
+
+>深度指的是节点到根节点的节点数
+>高度指的是节点到叶子节点的节点数
+>例如根节点为3；二层节点为4 6；三层节点为8 null 2 1的二叉树 其深度从根节点到叶子节点分别是3 2 1；而深度从根节点到叶子节点分别是1 2 3
+>使用前序遍历可以求得深度，使用后序遍历可以求得高度
+>在这里使用的是后序遍历，因为**二叉树根节点的高度等于二叉树的最大深度**
+
+```js
+//迭代法
+var maxdepth = function(root) {
+    //使用递归的方法 递归三部曲
+    //1. 确定递归函数的参数和返回值
+    const getdepth=function(node){
+    //2. 确定终止条件
+        if(node===null){
+            return 0;
+        }
+    //3. 确定单层逻辑 
+        let leftdepth=getdepth(node.left); //统计左子树的最大深度
+        let rightdepth=getdepth(node.right);
+        let depth=1+Math.max(leftdepth,rightdepth); //这里使用的是后序遍历 左右中 此处是中处理depth
+        return depth;
+    }
+    return getdepth(root);
+};
+
+//迭代版的简洁写法
+var maxdepth = function(root) {
+    if (root === null) return 0;
+    return 1 + Math.max(maxdepth(root.left), maxdepth(root.right))
+};
+
+//层序遍历基础上加上参数count
+var maxDepth = function(root) {
+    if(!root) return 0
+    let count = 0
+    const queue = [root]
+    while(queue.length) {
+        let size = queue.length
+        /* 层数+1 */
+        count++
+        while(size--) {
+            let node = queue.shift();
+            if(node.left) queue.push(node.left);
+            if(node.right) queue.push(node.right);
+        }
+    }
+    return count
+};
+```
+
+### 二叉树的最小深度
+
+>要确定一个根节点的左子树或者右子树没有值的情况
+
+```js
+//递归法
+var minDepth = function(root) {
+     //使用递归的方法 递归三部曲
+    //1. 确定递归函数的参数和返回值
+    const getdepth=function(node){
+    //2. 确定终止条件
+        if(node===null){
+            return 0;
+        }
+    //3. 确定单层逻辑
+        let leftdepth=getdepth(node.left);
+        let rightdepth=getdepth(node.right);
+        if(node.left===null&&node.right!==null){
+            return 1+rightdepth
+        }
+        if(node.left!==null&&node.right===null){
+            return 1+leftdepth
+        }
+        let depth=1+Math.min(leftdepth,rightdepth); //这里使用的是后序遍历 左右中 此处是中处理depth
+        return depth;
+    }
+    return getdepth(root);
+};
+
+//迭代法
+var minDepth = function(root) {
+    if(!root) return 0
+    let count = 0
+    const queue = [root]
+    while(queue.length) {
+        let size = queue.length
+        /* 层数+1 */
+        count++;
+        while(size--) {
+            let node = queue.shift();
+            // 到第一个叶子节点 返回 当前深度
+            if(!node.left && !node.right) return count;
+            if(node.left) queue.push(node.left);
+            if(node.right) queue.push(node.right);
+        }
+    }
+    return count
+};
+```
+
+### 完全二叉树的节点数量
+
+>用普通的前序遍历，后序遍历，中序遍历，层序遍历得到包含所有节点的数组最后再输出数组长度（或者层序遍历最后使用`let final = res.flat(Infinity)展平`）是一种方法，但是这对于普通二叉树和完全二叉树都可以使用，并且它由于需要搜索每一个节点因此它的复杂度是O(n)
+>
+>如果要利用完全二叉树的性质：如果其子树(例如左子树)为完全二叉树，则左子树的数量为（2^深度）- 1；
+
+```js
+//普通二叉树都适用的做法
+var countNodes = function(root){
+    var res = [];
+    const dfs = function(root){
+        if(root === null) return;
+        res.push(root.val); //中
+        dfs(root.left);  //左
+        dfs(root.right);  //右
+    }
+    dfs(root);
+    return res.length;
+};
+
+//也可以用递归法
+var countNodes = function(root) {
+    const getNodeSum=function(node){
+        if(node===null){
+            return 0;
+        }
+        let leftNum=getNodeSum(node.left);
+        let rightNum=getNodeSum(node.right);
+        return leftNum+rightNum+1;
+    }
+    return getNodeSum(root);
+};
+
+//利用完全二叉树的性质
+var countNodes = function(root) {
+    //利用完全二叉树的特点
+    //此处的终止条件有两种情况，第一种是运行到最后叶子节点的下一位空节点
+    //第二种是满二叉树的条件按照公式得到二叉树的节点数量
+    if(root===null){
+        return 0; //第一种情况
+    }
+    //第二种情况：直接递归左侧和右侧的节点，不需要计算中间的节点
+    let left=root.left;
+    let right=root.right;
+    let leftDepth=0,rightDepth=0;
+    while(left){
+        left=left.left;
+        leftDepth++; //得到左边的深度
+    }
+    while(right){
+        right=right.right;
+        rightDepth++;//得到右侧的深度
+    }
+    if(leftDepth==rightDepth){ //如果左右侧深度相等则为完全二叉树
+        return Math.pow(2,leftDepth+1)-1;
+    }
+    let leftNum = countNodes(root.left);
+    let rightNum = countNodes(root.right);
+    let res = leftNum + rightNum + 1; //加上根节点
+    return res; //后序遍历
+};
+```
+
+
+
+### 平衡二叉树
+
+>仍然使用后序遍历求高度，基本方法是基于二叉树的最大深度
+
+```js
+//迭代法
+var isBalanced = function(root) {
+    //还是用递归三部曲 + 后序遍历 左右中 当前左子树右子树高度相差大于1就返回-1
+    // 1. 确定递归函数参数以及返回值
+    const getDepth = function(node) {
+        // 2. 确定递归函数终止条件
+        if(node === null) return 0;
+        // 3. 确定单层递归逻辑
+        let leftDepth = getDepth(node.left); //左子树高度
+        // 当判定左子树不为平衡二叉树时,即可直接返回-1
+        if(leftDepth === -1) return -1;
+        let rightDepth = getDepth(node.right); //右子树高度
+        // 当判定右子树不为平衡二叉树时,即可直接返回-1
+        if(rightDepth === -1) return -1;
+        if(Math.abs(leftDepth - rightDepth) > 1) {
+            return -1;
+        } else {
+            return 1 + Math.max(leftDepth, rightDepth);
+        }
+    }
+    return !(getDepth(root) === -1);
+};
+```
+
+
+
+### 二叉树的所有路径
+
+```js
+var binaryTreePaths = function(root) {
+   //递归遍历+递归三部曲
+   let res=[];
+   //1. 确定递归函数 函数参数
+   const getPath=function(node,curPath){
+    //2. 确定终止条件，到叶子节点就终止
+       if(node.left===null&&node.right===null){
+           curPath+=node.val; //把叶子节点也加入进去
+           res.push(curPath);
+           return ;
+       }
+       //3. 确定单层递归逻辑:这里使用前序遍历，因为只有前序遍历才可以从父节点一次向子左右节点遍历
+       curPath+=node.val+'->';  //中(逻辑处理)
+       if(node.left) getPath(node.left,curPath);  //左
+       if(node.right) getPath(node.right,curPath);  //右
+   }
+   getPath(root,'');
+   return res;
+};
+```
+
+
+
+### 左叶子之和
+
+```js
+var sumOfLeftLeaves = function(root) {
+    var getSum = function(root){
+        //终止条件
+        if(root===null) return 0; //根节点为空的情况直接返回0
+        //叶子节点返回0因为只知道是叶子节点，不知道是否是左节点，因此在下面重新覆盖
+        if(root.left===null && root.right===null) return 0; 
+        let leftNum = sumOfLeftLeaves(root.left)
+        if(root.left!==null && root.left.left===null && root.left.right===null){
+            leftNum=root.left.val;  //重新覆盖左叶子值
+        }
+        let rightNum = sumOfLeftLeaves(root.right)
+        return leftNum + rightNum; //用的是后序遍历
+    }
+    return getSum(root);
 };
 ```
 
