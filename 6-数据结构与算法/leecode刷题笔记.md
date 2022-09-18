@@ -1645,7 +1645,8 @@ var invertTree = function(root) {
 
 ### 对称二叉树
 
->只能使用后序遍历，因为要收集孩子的信息（左节点和右节点的信息）向上一级节点返回
+>给定一个二叉树，检查它是否是镜像对称的
+>做法：只能使用后序遍历，因为要收集孩子的信息（左节点和右节点的信息）向上一级节点返回
 
 ```js
 var isSymmetric = function(root) {
@@ -1841,7 +1842,7 @@ var countNodes = function(root) {
 
 ### 平衡二叉树
 
->仍然使用后序遍历求高度，基本方法是基于二叉树的最大深度
+>判断一个树是否为平衡二叉树：仍然使用后序遍历求高度，基本方法是基于二叉树的最大深度
 
 ```js
 //迭代法
@@ -1872,6 +1873,8 @@ var isBalanced = function(root) {
 
 ### 二叉树的所有路径
 
+>给定一个二叉树，返回所有从根节点到叶子节点的路径
+
 ```js
 var binaryTreePaths = function(root) {
    //递归遍历+递归三部曲
@@ -1898,6 +1901,8 @@ var binaryTreePaths = function(root) {
 
 ### 左叶子之和
 
+>计算给定二叉树的所有左叶子之和
+
 ```js
 var sumOfLeftLeaves = function(root) {
     var getSum = function(root){
@@ -1914,5 +1919,108 @@ var sumOfLeftLeaves = function(root) {
     }
     return getSum(root);
 };
+```
+
+
+
+### 找树左下角的值
+
+>给定一个二叉树，在树的最后一行找到最左边的值
+
+```js
+//迭代法只需要把最后一行的第一个值输出即可
+var findBottomLeftValue = function(root) {
+   //二叉树的层序遍历
+    let res=[],queue=[];
+    let layout=0;
+    queue.push(root);
+    if(root===null){
+        return res;
+    }
+    while(queue.length!==0){
+        // 记录当前层级节点数
+        let length=queue.length;
+        //存放每一层的节点 
+        let curLevel=[];
+        layout++;
+        for(let i=0;i<length;i++){
+            let node=queue.shift();
+            curLevel.push(node.val);
+            // 存放当前层下一层的节点
+            if(node.left){
+                queue.push(node.left);
+            }
+            if(node.right){
+                queue.push(node.right)
+            }
+        }
+        //把每一层的结果放到结果数组
+        res.push(curLevel);
+    }
+    return res[layout-1][0]
+};
+
+
+//递归法 递归法找深度最大的最左侧的叶子节点
+var findBottomLeftValue = function(root) {
+    //首先考虑递归遍历 前序遍历 找到最大深度的叶子节点即可
+    let maxPath = 0,resNode = null;
+    // 1. 确定递归函数的函数参数，maxPath用来记录最大深度，resNode记录最大深度最左节点的数值
+    const dfsTree = function(node,curPath){ //此处的curPath是记录深度
+    // 2. 确定递归函数终止条件，当遇到叶子节点时，需要统计一下最大的深度，因此遇到叶子节点来更新最大深度
+        if(node.left===null&&node.right===null){
+            if(curPath>maxPath){
+            maxPath = curPath;
+            resNode = node.val;
+            }
+        }
+        //前序遍历，此处前为空，因为只需要左右即可
+        if(node.left) dfsTree(node.left,curPath+1); //先判断是否为空节点,上面操作空节点会异常
+        if(node.right) dfsTree(node.right,curPath+1); //先判断是否为空节点,上面操作空节点会异常
+    }
+    dfsTree(root,1);
+    return resNode;
+};
+```
+
+
+
+### 路径总和
+
+>给二叉树的根节点 `root` 和一个表示目标和的整数 `targetSum` 。判断该树中是否存在 **根节点到叶子节点** 的路径，这条路径上所有节点值相加等于目标
+
+```js
+//基于二叉树的所有路径之和可以直接修改一小部分得出
+var hasPathSum = function(root, targetSum) {
+   //递归遍历+递归三部曲
+   let res=[];
+   //1. 确定递归函数 函数参数
+   const getPath=function(node,curPath){ //没有这步的话会空指针异常报错
+       if(node === null){
+           if(targetSum=0){
+               return true;
+           }else{
+               return false;
+           }
+       }
+    //2. 确定终止条件，到叶子节点就终止
+       if(node.left===null&&node.right===null){
+           curPath+=node.val; //把叶子节点也加入进去
+           res.push(curPath);
+           return ;
+       }
+       //3. 确定单层递归逻辑:这里使用前序遍历，因为只有前序遍历才可以从父节点一次向子左右节点遍历
+       curPath+=node.val;  //中(逻辑处理)
+       if(node.left) getPath(node.left,curPath);  //左
+       if(node.right) getPath(node.right,curPath);  //右
+   }
+   getPath(root,0);
+   for(let i=0;i<res.length;i++){
+       if(res[i] === targetSum) return true;
+   }
+   return false
+};
+
+//
 ```
 
