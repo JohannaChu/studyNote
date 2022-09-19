@@ -2024,3 +2024,62 @@ var hasPathSum = function(root, targetSum) {
 //
 ```
 
+
+
+### 从中序与后序遍历构造二叉树
+
+>给定中序和后序的二叉树构造二叉树
+
+```js
+//给定中序和后序
+var buildTree = function(inorder, postorder) {
+    if (!inorder.length) return null;
+    let rootVal = postorder.pop(); // 从后序遍历的数组中获取中间节点的值， 即数组最后一个值
+    let rootIndex = inorder.indexOf(rootVal); // 获取中间节点在中序遍历中的下标
+    let root = new TreeNode(rootVal); // 创建中间节点
+    root.left = buildTree(inorder.slice(0, rootIndex), postorder.slice(0, rootIndex)); // 创建左节点
+    root.right = buildTree(inorder.slice(rootIndex + 1), postorder.slice(rootIndex)); // 创建右节点
+    return root;
+};
+
+//给定中序和前序
+var buildTree = function(preorder, inorder) {
+  if (!preorder.length) return null;
+  const rootVal = preorder.shift(); // 从前序遍历的数组中获取中间节点的值， 即数组第一个值
+  const index = inorder.indexOf(rootVal); // 获取中间节点在中序遍历中的下标
+  const root = new TreeNode(rootVal); // 创建中间节点
+  root.left = buildTree(preorder.slice(0, index), inorder.slice(0, index)); // 创建左节点
+  root.right = buildTree(preorder.slice(index), inorder.slice(index + 1)); // 创建右节点
+  return root;
+};
+```
+
+
+
+### 构造最大二叉树
+
+>凡是构造二叉树的都应该用到前序遍历的方法，因为前序是中左右，先把根节点构造出来然后才能构造左子树和右子树
+
+```js
+var constructMaximumBinaryTree = function (nums) {
+    const BuildTree = (arr, left, right) => {
+        if (left > right) //重点在于这里，他的终止条件（因为leecode里面规定nums.lenght大于1）
+            return null;
+        let maxValue = -1;
+        let maxIndex = -1;
+        for (let i = left; i <= right; ++i) {
+            if (arr[i] > maxValue) {
+                maxValue = arr[i];
+                maxIndex = i;
+            }
+        }
+        let root = new TreeNode(maxValue);
+        root.left = BuildTree(arr, left, maxIndex - 1);
+        root.right = BuildTree(arr, maxIndex + 1, right);
+        return root;
+    }
+    let root = BuildTree(nums, 0, nums.length - 1);
+    return root;
+};
+```
+
