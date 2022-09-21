@@ -2083,3 +2083,5 @@ var constructMaximumBinaryTree = function (nums) {
 };
 ```
 
+### 合并二叉树
+
