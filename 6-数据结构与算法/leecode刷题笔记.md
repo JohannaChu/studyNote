@@ -1995,7 +1995,7 @@ var hasPathSum = function(root, targetSum) {
    //递归遍历+递归三部曲
    let res=[];
    //1. 确定递归函数 函数参数
-   const getPath=function(node,curPath){ //没有这步的话会空指针异常报错
+   const getPath=function(node,curPath){ //没有这步的话会空指针异常报错,为空节点
        if(node === null){
            if(targetSum=0){
                return true;
@@ -2098,4 +2098,82 @@ var mergeTrees = function(root1, root2) {
     return root1;
 };
 ```
+
+
+
+### 验证二叉搜索树
+
+```js
+//中序遍历得到的数组是递增的，直接判断是否是递增函数即可
+var isValidBST = function(root) {
+    let res = []
+    var dfs = function(root){
+        if(root===null) return;
+        dfs(root.left)
+        res.push(root.val)
+        dfs(root.right)
+    }
+    dfs(root)
+    for(let i=1;i<res.length;i++){
+        if(res[i] <= res[i-1]){
+            return false
+        }
+    }
+    return true
+};
+```
+
+
+
+### 最近公共祖先
+
+![](C:\Users\Z\Desktop\前端\面试准备问题.assets\Snipaste_2022-10-03_01-26-10.png)
+
+```js
+var lowestCommonAncestor = function(root, p, q) {
+    // 使用递归的方法
+    // 需要从下到上，所以使用后序遍历
+    // 1. 确定递归的函数
+    var ancestor = function(root,p,q){
+        // 2. 确定递归终止条件
+        if(root===null || root===p || root===q){
+            return root
+        }
+        let left = ancestor(root.left,p,q)
+        let right = ancestor(root.right,p,q)
+        // 3. 确定递归单层逻辑
+        if(left!==null && right!==null){
+            return root
+        }else if(left==null){
+            return right
+        }else{
+            return left
+        }
+    }
+    return ancestor(root,p,q)
+};
+```
+
+
+
+### 二叉搜索树转为累加数
+
+```js
+//二叉搜索树是递增的有顺序，累加相当于反中序遍历
+var convertBST = function(root) { 
+    let pre = 0;
+    const ReverseInOrder = (cur) => { 
+        if(cur) { //不需要递归函数的返回值做什么操作，要遍历整棵树
+            ReverseInOrder(cur.right);
+            cur.val += pre;
+            pre = cur.val;  //pre指针记录当前遍历节点cur的前一个节点
+            ReverseInOrder(cur.left);
+        }
+    }
+    ReverseInOrder(root);
+    return root;
+};
+```
+
+
 
