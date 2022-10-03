@@ -2177,3 +2177,218 @@ var convertBST = function(root) {
 
 
 
+# 回溯
+
+## 理论知识
+
+>是一种纯暴力的搜索算法，常用于解决组合问题、切割问题、子集问题、棋盘问题
+>
+>- 组合问题：N个数里面按一定规则找出k个数的集合
+>- 切割问题：一个字符串按一定规则有几种切割方式
+>- 子集问题：一个N个数的集合里有多少符合条件的子集
+>- 排列问题：N个数按一定规则全排列，有几种排列方式
+>- 棋盘问题：N皇后，解数独等等
+>
+>所有回溯法的问题都可以抽象为树形结构，回溯法解决的都是在集合中递归查找子集，集合的大小就构成了树的宽度；递归的深度则构成的树的深度
+
+```js
+//回溯算法模板,for循环可以理解是横向遍历，backtracking（递归）就是纵向遍历
+void backtracking(参数) {
+    if (终止条件) {
+        存放结果;
+        return;
+    }
+
+    for (选择：本层集合中元素（树中节点孩子的数量就是集合的大小）) {
+        处理节点;
+        backtracking(路径，选择列表); // 递归
+        回溯，撤销处理结果
+    }
+}
+回溯三部曲：
+1、递归函数的参数和返回值：返回值一般都是空
+2、递归函数的终止条件（重要）
+3、单层搜索的逻辑（单层递归的逻辑）
+```
+
+## 基础习题锻炼
+
+### 组合
+
+>给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合
+>
+>```
+>输入：n = 4, k = 2
+>输出：
+>[
+>  [2,4],
+>  [3,4],
+>  [2,3],
+>  [1,2],
+>  [1,3],
+>  [1,4],
+>]
+>```
+
+```js
+var combine = function(n, k) {
+    let result = []
+    let path = []
+    var combineBackTracking = function(n,k,startIndex){ //递归和for循环
+        if(path.length === k){
+            result.push([...path])
+            return
+        }
+        for(let i=startIndex;i<=n;i++){ //i<=n - (k - path.length) + 1则可以剪枝优化
+            path.push(i)
+            combineBackTracking(n,k,i+1)
+            path.pop()  //回溯
+    }
+}
+    combineBackTracking(n,k,1)
+    return result
+};
+
+//剪枝优化：只需要把i<=n改为n - (k - path.length) + 1
+```
+
+### 组合总和III
+
+>找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：
+>
+>只使用数字1到9
+>每个数字 最多使用一次 
+>返回 所有可能的有效组合的列表 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
+>
+>```
+>输入: k = 3, n = 7
+>输出: [[1,2,4]]
+>解释:
+>1 + 2 + 4 = 7
+>没有其他符合的组合了。
+>```
+
+```js
+var combinationSum3 = function(k, n) {
+    let result = [],path = [],temp=0
+    var combineBackTracking = function(k,n,startIndex){ //递归和for循环
+        if(path.length === k){
+            //这里可以不用temp,因为用temp的话下面每次计算都要重新置为0
+            //可以用const sum = path.reduce((a,b) => a+b) 比 较sum和n是否相等
+            for(let i=0;i<path.length;i++){
+                temp += path[i]
+            } 
+            if(temp === n){
+                result.push([...path])
+            }
+            temp = 0
+            return
+        }
+        for(let i=startIndex;i<=9;i++){ //i<= 9 - (k - path.length) + 1则可以剪枝优化
+            path.push(i)
+            combineBackTracking(k,n,i+1)
+            path.pop() //回溯
+        }
+    }
+    combineBackTracking(k,n,1)
+    return result
+};
+
+//reduce常用于数组累加：
+array.reduce(function(accumulator, currentValue, currentIndex, arr), initialValue);
+/*
+  accumulator:  必需。累计器-上一个值
+  currentValue: 必需。当前元素
+  
+  currentIndex: 可选。当前元素的索引；                    
+  arr:          可选。要处理的数组
+  initialValue: 可选。传递给函数的初始值，相当于accumulator的初始值
+*/
+简单来说就是对一个array执行reduce()方法，就是把其中的function()挨个地作用于array中的元素上，而且上一次的输出会作为下一次的一个输入
+let array = [1, 2, 3, 4, 5];
+array.reduce((sum, curr) => sum + curr, 0); // 得到15
+```
+
+
+
+### 电话号码的字母组合
+
+>给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回
+>给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+>
+>```
+>输入：digits = "23"
+>输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+>```
+
+```js
+//要做一个映射关系  
+var letterCombinations = function(digits) {
+    let path=[],result=[]
+    const map = ["","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"];
+    if(!digits.length) return [];
+    if(digits.length === 1) return map[digits].split("");
+    
+    var combinations = function(dights,index){
+        if(path.length === dights.length){
+            result.push(path.join(""))
+            return
+        }
+        for(let i=0;i<map[digits[index]].length;i++){ //map['23'[0]]的结果是map[2]="abc"
+            path.push(map[digits[index]][i]) //取出'abc'里面的每一项即path=['a','b','c']
+            combinations(digits,index+1)
+            path.pop()
+        }
+        // for(const v of map[digits[index]]) {  //上面的for也可以改为下面的for of会更简单
+        //     path.push(v);
+        //     combinations(digits, index + 1);
+        //     path.pop();
+        // }
+    }
+    combinations(digits,0)
+    return result
+};
+```
+
+
+
+### 组合总和
+
+>给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+>candidates 中的 同一个 数字可以**无限制**重复被选取。如果至少一个数字的被选数量不同，则两种组合不同
+>对于给定的输入，保证和为 target 的不同组合数少于 150 个。
+>
+>```
+>输入：candidates = [2,3,6,7], target = 7
+>输出：[[2,2,3],[7]]
+>解释：
+>2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+>7 也是一个候选， 7 = 7 。
+>仅有这两种组合。
+>```
+>
+
+```js
+var combinationSum = function(candidates, target) {
+    const res = [], path = [];
+    function backtracking(candidates,target,startIndex,sum) {
+        if (sum === target) {
+            res.push([...path]);
+            return;
+        }
+        for(let i = startIndex; i < candidates.length; i++ ) {
+            const n = candidates[i];
+            if(n > target - sum) break;  //此处是优化剪枝
+            path.push(n);
+            sum += n;
+            backtracking(candidates,target,i,sum);
+            path.pop();
+            sum -= n;
+        }
+    }
+    candidates.sort((a,b)=>a-b); // 排序，为了优化剪枝
+    backtracking(candidates,target,0,0);
+    return res;
+};
+```
+
