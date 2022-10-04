@@ -2392,3 +2392,79 @@ var combinationSum = function(candidates, target) {
 };
 ```
 
+
+
+### 分割回文串
+
+>给你一个字符串 `s`，请你将 `s` 分割成一些子串，使每个子串都是 **回文串** 。返回 `s` 所有可能的分割方案。
+>
+>**回文串** 是正着读和反着读都一样的字符串
+>
+>```
+>输入：s = "aab"
+>输出：[["a","a","b"],["aa","b"]]
+>```
+
+```js
+const isPalindrome = (s, l, r) => {
+    // for (let i = l, j = r; i <= j; i++, j--) {
+    //     if(s[i] !== s[j]) return false;
+    // }
+    let i=l,j=r //左右指针分辨是否是回文串，两种方法
+    while(i<=j){
+        if(s[i] !== s[j]) return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+
+var partition = function(s) {
+    const res = [], path = [], len = s.length;
+    var backtracking = function(startindex) {
+        if(startindex >= len) {  //判断是否是回文子串会在单层逻辑里面判断
+            res.push([...path]);
+            return;
+        }
+        for(let i = startindex; i < len; i++) {
+            if(!isPalindrome(s, startindex, i)) continue; //？这里其实不大懂
+            path.push(s.slice(startindex, i + 1));
+            backtracking(i + 1);
+            path.pop();
+        }
+    }
+    backtracking(0);
+    return res;
+};
+```
+
+
+
+### 子集问题
+
+>给你一个整数数组 `nums` ，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。
+>
+>解集 **不能** 包含重复的子集。你可以按 **任意顺序** 返回解集
+>
+>```
+>输入：nums = [1,2,3]
+>输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+>```
+>![](C:\Users\Z\Desktop\前端\面试准备问题.assets\2.png)
+```js
+//组合问题和分割问题都是收集树的叶子节点，而子集问题是找树的所有节点（子集也是一种组合问题，它的集合是无序的）
+var subsets = function(nums) {
+    let path = [], res = []
+    var sets = function(nums,startindex){
+        res.push([...path])
+        for(let i=startindex;i<nums.length;i++){
+            path.push(nums[i])
+            sets(nums,i+1)
+            path.pop()
+        }
+    }
+    sets(nums,0)
+    return res;
+};
+```
+
