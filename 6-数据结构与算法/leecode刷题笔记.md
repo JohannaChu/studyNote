@@ -2311,47 +2311,6 @@ array.reduce((sum, curr) => sum + curr, 0); // 得到15
 
 
 
-### 电话号码的字母组合
-
->给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回
->给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
->
->```
->输入：digits = "23"
->输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
->```
-
-```js
-//要做一个映射关系  
-var letterCombinations = function(digits) {
-    let path=[],result=[]
-    const map = ["","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"];
-    if(!digits.length) return [];
-    if(digits.length === 1) return map[digits].split("");
-    
-    var combinations = function(dights,index){
-        if(path.length === dights.length){
-            result.push(path.join(""))
-            return
-        }
-        for(let i=0;i<map[digits[index]].length;i++){ //map['23'[0]]的结果是map[2]="abc"
-            path.push(map[digits[index]][i]) //取出'abc'里面的每一项即path=['a','b','c']
-            combinations(digits,index+1)
-            path.pop()
-        }
-        // for(const v of map[digits[index]]) {  //上面的for也可以改为下面的for of会更简单
-        //     path.push(v);
-        //     combinations(digits, index + 1);
-        //     path.pop();
-        // }
-    }
-    combinations(digits,0)
-    return result
-};
-```
-
-
-
 ### 组合总和
 
 >给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
@@ -2389,6 +2348,100 @@ var combinationSum = function(candidates, target) {
     candidates.sort((a,b)=>a-b); // 排序，为了优化剪枝
     backtracking(candidates,target,0,0);
     return res;
+};
+```
+
+
+
+### 组合总和II
+
+>给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+>candidates 中的每个数字在每个组合中只能使用 一次 。
+>注意：解集不能包含重复的组合
+>
+>```
+>输入: candidates = [10,1,2,7,6,1,5], target = 8,
+>输出:
+>[
+>[1,1,6],
+>[1,2,5],
+>[1,7],
+>[2,6]
+>]
+>```
+
+```js
+//这里和上一道题的不同点在于这里的数组是有重复数据的(集合（数组candidates）有重复元素，但还不能有重复的组合)
+//对同一个树层去重，同一个树枝的则不用去重：排序并且i > startindex && candidates[i] === candidates[i-1]
+var combinationSum2 = function(candidates, target) {
+    const res = []; path = [], len = candidates.length;
+    candidates.sort((a,b)=>a-b);
+    backtracking(0, 0);
+    return res;
+    function backtracking(sum, i) {
+        if (sum === target) {
+            res.push(Array.from(path));
+            return;
+        }
+        for(let j = i; j < len; j++) {
+            const n = candidates[j];
+            if(j > i && candidates[j] === candidates[j-1]){
+              //若当前元素和前一个元素相等
+              //则本次循环结束，防止出现重复组合
+              continue;
+            }
+            //如果当前元素值大于目标值-总和的值
+            //由于数组已排序，那么该元素之后的元素必定不满足条件
+            //直接终止当前层的递归
+            if(n > target - sum) break;
+            path.push(n);
+            sum += n;
+            backtracking(sum, j + 1);
+            path.pop();
+            sum -= n;
+        }
+    }
+};
+```
+
+
+
+### 电话号码的字母组合
+
+>给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回
+>给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+>
+>```
+>输入：digits = "23"
+>输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+>```
+
+```js
+//要做一个映射关系  
+var letterCombinations = function(digits) {
+    let path=[],result=[]
+    const map = ["","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"];
+    if(!digits.length) return [];
+    if(digits.length === 1) return map[digits].split("");
+    
+    var combinations = function(dights,index){
+        if(path.length === dights.length){
+            result.push(path.join(""))
+            return
+        }
+        for(let i=0;i<map[digits[index]].length;i++){ //map['23'[0]]的结果是map[2]="abc"
+            path.push(map[digits[index]][i]) //取出'abc'里面的每一项即path=['a','b','c']
+            combinations(digits,index+1)
+            path.pop()
+        }
+        // for(const v of map[digits[index]]) {  //上面的for也可以改为下面的for of会更简单
+        //     path.push(v);
+        //     combinations(digits, index + 1);
+        //     path.pop();
+        // }
+    }
+    combinations(digits,0)
+    return result
 };
 ```
 
@@ -2465,6 +2518,117 @@ var subsets = function(nums) {
     }
     sets(nums,0)
     return res;
+};
+```
+
+
+
+### 子集II
+
+>给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+>
+>解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
+>
+>```
+>输入：nums = [1,2,2]
+>输出：[[],[1],[1,2],[1,2,2],[2],[2,2]]
+>```
+
+```js
+//和有重复项的组合问题类似，排序+同树层去重，树枝不用去重
+var subsetsWithDup = function(nums) {
+    let path = [], res = []
+    let sortNums = nums.sort((a, b) => {
+        return a - b
+    })
+    var sets = function(sortNums,startindex){
+        res.push([...path])
+        for(let i=startindex;i<sortNums.length;i++){
+            if(startindex<i && sortNums[i]===sortNums[i-1]) continue;//区别在于新增了这句和上面的排序
+            path.push(sortNums[i])
+            sets(sortNums,i+1)
+            path.pop()
+        }
+    }
+    sets(sortNums,0)
+    return res;
+};
+```
+
+
+
+### 全排列
+
+>给定一个不含重复数字的数组 `nums` ，返回其 *所有可能的全排列*
+>
+>```
+>输入：nums = [1,2,3]
+>输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+>```
+
+![](C:\Users\Z\Desktop\前端\面试准备问题.assets\4.png)
+
+```js
+//要用used数组标记已经选择的元素
+var permute = function(nums) {
+    let path=[], res=[]
+    var permuteTemp = function(nums,used){
+        if(path.length === nums.length){
+            res.push([...path])
+        }
+        for(let i=0;i<nums.length;i++){ //排列是有序的，每次都要重新从第0位
+            if(used[i]) continue;
+            path.push(nums[i])
+            used[i] = true
+            permuteTemp(nums,used)
+            path.pop()
+            used[i] = false
+        }
+    }
+    permuteTemp(nums,[])
+    return res
+};
+```
+
+
+
+### 全排列II
+
+>给定一个可包含重复数字的序列 `nums` ，***按任意顺序*** 返回所有不重复的全排列。
+>
+>```
+>输入：nums = [1,1,2]
+>输出：
+>[[1,1,2],
+> [1,2,1],
+> [2,1,1]]
+>```
+
+```js
+//排序
+//used[i - 1] == true，说明同一树枝candidates[i - 1]使用过
+//used[i - 1] == false，说明同一树层candidates[i - 1]使用过
+var permuteUnique = function(nums) {
+    let path=[], res=[]
+    let sortNums = nums.sort((a, b) => {
+        return a - b
+    })
+    var permuteTemp = function(sortNums,used){
+        if(path.length === sortNums.length){
+            res.push([...path])
+        }
+        for(let i=0;i<sortNums.length;i++){ //排列是有序的，每次都要重新从第0位
+            if(sortNums[i] === sortNums[i-1] && used[i-1] == false) continue //新增了这句和上面排序
+            if(used[i]) continue;
+            path.push(sortNums[i])
+            used[i] = true
+            permuteTemp(sortNums,used)
+            path.pop()
+            used[i] = false
+        }
+    }
+    permuteTemp(nums,[])
+    return res
 };
 ```
 
