@@ -2870,3 +2870,96 @@ var jump = function(nums) {
 };
 ```
 
+
+
+### 根据身高重建队列
+
+>#### [406. 根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/)
+>
+>确定一个维度，然后在按照另一个维度重新排列（确定一边然后贪心另一边）
+
+```js
+var reconstructQueue = function(people) {
+    let res = []
+    people.sort((a,b) => {//按照身高重新排序
+        if(a[0] !== b[0]) {
+            return b[0] - a[0]  //若k不相同则直接排序
+        }else{  //若k不相同则k越小的排在越前
+            return a[1] - b[1]
+        }
+    })
+    people.forEach( item => {
+        res.splice(item[1],0,item)  //根据k插入对应的位置
+    })
+    return res
+};
+```
+
+
+
+# 动态规划
+
+## 理论知识
+
+>动态规划中每一个状态一定是由上一个状态推导出来的；贪心没有状态推导，而是从局部直接选最优的（动规是由前一个状态推导出来的；贪心是局部直接选最优的）
+>要注意（1）dp数组以及下标的含义  （2）递推公式  （3）dp数组如何初始化 （4）遍历顺序  （5）打印dp数组
+>
+>动态规划五部曲：
+>
+>- 确定dp数组（dp table）以及下标的含义（一般用一维或者二维的数组表示dp数组）
+>- 确定递推公式
+>- dp数组如何初始化
+>- 确定遍历顺序
+>- 举例推导dp数组
+
+## 基础习题锻炼
+
+### 斐波那契数列
+
+>- 确定dp[i]含义： dp[i]表示第i个斐波那契数
+>- 确定递推公式： dp[i] = dp[i-1] + dp[i-2]
+>- dp数组初始化： dp[0] = 1, dp[1] = 1
+>- 遍历顺序：从前往后
+>- 打印dp数组：一般出bug调试做这步
+
+```js
+//动态规划
+var fib = function(n) {
+    let dp = [0, 1]
+    for(let i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2]
+    }
+    // console.log(dp)
+    return dp[n]
+};
+
+//递归
+var fib = function(n) {
+    if (n === 0 ) return 0;
+    if (n === 1) return 1;
+    return fib(n - 1) + fib(n - 2);
+};
+```
+
+
+
+### 爬楼梯
+
+>- 确定dp数组以及下标的含义：dp[i]是爬到第i层楼梯，有dp[i]种**方法**
+>- 确定递推公式：dp[i] = dp[i - 1] + dp[i - 2] 
+>- dp数组初始化：dp[1] = 1，dp[2] = 2（dp[0]=1不能解释通）
+>- 确定遍历顺序：从前向后遍历
+>- 举例推导dp数组
+
+```js
+var climbStairs = function(n) {
+    // dp[i] 为第 i 阶楼梯有多少种方法爬到楼顶
+    // dp[i] = dp[i - 1] + dp[i - 2]
+    let dp = [1 , 2]
+    for(let i = 2; i < n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2]
+    }
+    return dp[n - 1]
+};
+```
+
